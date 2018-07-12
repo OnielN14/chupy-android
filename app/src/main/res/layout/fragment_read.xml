@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentRead">
+    tools:context=".FragmentRead"
+    android:id="@+id/view_pager_read">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,4 +13,4 @@
         android:textSize="30sp"
         android:layout_centerInParent="true"/>
 
-</FrameLayout>
+</android.support.v4.view.ViewPager>
