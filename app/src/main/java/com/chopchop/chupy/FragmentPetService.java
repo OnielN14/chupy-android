@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -87,7 +88,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private View view;
+    private ViewGroup view;
 
 
 
@@ -95,7 +96,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_petservice, container, false);
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_petservice, container, false);
         mSearchText = (EditText) view.findViewById(R.id.input_search);
         getLocationPermission();
         return view;
@@ -162,7 +163,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: found location!");
+
                             Location currentLocation = (Location) task.getResult();
+
+//                            kalo lokasi isinya null
+                            if(currentLocation == null){
+                                LocationManager locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
+
+                                currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            }
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,

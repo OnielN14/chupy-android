@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Chupy</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="read_search_bar">Search articles, news, or tips &amp; trick</string>
+    <string-array name="read_tab_menu">
+        <item>News</item>
+        <item>Article</item>
+        <item>Tips &amp; Trick</item>
+    </string-array>
 </resources>

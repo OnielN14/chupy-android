@@ -1,10 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/view_pager_read">
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/AppTheme.FullActionBar">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_read"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar_read"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetRight="0dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <android.support.v7.widget.SearchView
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/component_rounded_search_bar"
+                    android:imeOptions="actionSearch"
+                    android:clickable="true"
+                    app:iconifiedByDefault="false"
+                    android:id="@+id/search_view_read"
+                    app:defaultQueryHint="@string/read_search_bar"
+                    android:focusable="true"
+
+                    >
+
+                </android.support.v7.widget.SearchView>
+
+                <android.support.design.widget.TabLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tab_layout_read"
+                    app:tabTextColor="@android:color/white"
+                    app:tabSelectedTextColor="@android:color/white">
+
+                </android.support.design.widget.TabLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/view_pager_read">
 
 
 
-</android.support.v4.view.ViewPager>
+    </android.support.v4.view.ViewPager>
+</android.support.design.widget.CoordinatorLayout>
