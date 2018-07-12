@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_petservice"
+        android:icon="@drawable/icon_menu_pet_service"
+        android:title="Pet Service" />
+
+    <item
+        android:id="@+id/nav_read"
+        android:icon="@drawable/icon_menu_article"
+        android:title="Read" />
+
+    <item
+        android:id="@+id/nav_write"
+        android:icon="@drawable/icon_menu_write"
+        android:title="Write" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/icon_menu_profile"
+        android:title="Profile" />
+</menu>
