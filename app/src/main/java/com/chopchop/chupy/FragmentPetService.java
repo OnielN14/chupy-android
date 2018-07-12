@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,8 +83,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
 
     //Widget
     private EditText mSearchText;
-
-    //vars
+    private ImageView imgSearchIcon;
+        //vars
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -97,14 +98,36 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
 
         view = inflater.inflate(R.layout.fragment_petservice, container, false);
         mSearchText = (EditText) view.findViewById(R.id.input_search);
+        imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
+
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                    init();
+                    Toast.makeText(getContext(), "lululululu", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        imgSearchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                init();
+            }
+        });
+
         getLocationPermission();
         return view;
 
     }
 
 
-    private void init() {
+    public void init() {
         Log.d(TAG, "init: initializing");
+        Toast.makeText(getContext(), "Init brooww!!!", Toast.LENGTH_SHORT).show();
 
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

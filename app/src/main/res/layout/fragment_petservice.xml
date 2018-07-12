@@ -30,7 +30,8 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_magnify" />
+            android:src="@drawable/ic_magnify"
+            />
 
         <EditText
             android:layout_width="match_parent"
@@ -41,6 +42,7 @@
             android:textColor="#000"
             android:id="@+id/input_search"
             android:background="@null"
+            android:singleLine="true"
             android:hint="Search pet shop"
             android:imeOptions="actionSearch"
             android:layout_marginLeft="20dp" />
