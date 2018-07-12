@@ -68,7 +68,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
                 return;
             }
             mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
             init();
         }
@@ -127,8 +127,11 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback{
 
     public void init() {
         Log.d(TAG, "init: initializing");
+<<<<<<< Updated upstream
         Toast.makeText(getContext(), "Init brooww!!!", Toast.LENGTH_SHORT).show();
 
+=======
+>>>>>>> Stashed changes
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
