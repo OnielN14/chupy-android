@@ -3,14 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentRead"
     android:id="@+id/view_pager_read">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="READ"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+
 
 </android.support.v4.view.ViewPager>

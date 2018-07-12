@@ -12,10 +12,11 @@ import com.chopchop.chupy.R;
 
 public class ReadNewsFragment extends Fragment {
 
+    private String fragmentTitle = "News";
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_read_halaman_news, container, false);
 
         return rootView;
