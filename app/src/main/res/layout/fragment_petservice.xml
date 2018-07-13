@@ -7,11 +7,13 @@
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".Fragment.FragmentPetService"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        tools:context=".Fragment.FragmentPetService" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,7 +35,7 @@
             android:src="@drawable/ic_magnify"
             />
 
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@+id/ic_magnify"
@@ -45,8 +47,24 @@
             android:singleLine="true"
             android:hint="Search pet shop"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
             android:imeOptions="actionSearch" />
 
     </RelativeLayout>
+
+
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relLayout"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_gps"
+        android:src="@drawable/ic_gps"
+        android:background="@drawable/ic_for_gps"
+        android:elevation="3dp"/>
 
 </RelativeLayout>
