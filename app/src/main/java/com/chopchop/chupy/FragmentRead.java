@@ -78,6 +78,10 @@ public class FragmentRead extends Fragment {
 
                     v.setBackground(getActivity().getDrawable(R.drawable.component_not_rounded_search_bar));
                     marginLayoutParams.setMargins(l, t, r, b);
+
+                    viewPager.setVisibility(View.GONE);
+                    mTabLayout.setVisibility(View.GONE);
+
                     v.requestLayout();
                 }
                 else{
@@ -88,6 +92,10 @@ public class FragmentRead extends Fragment {
 
                     v.setBackground(getActivity().getDrawable(R.drawable.component_rounded_search_bar));
                     marginLayoutParams.setMargins(l, t, r, b);
+
+                    viewPager.setVisibility(View.VISIBLE);
+                    mTabLayout.setVisibility(View.VISIBLE);
+
                     v.requestLayout();
                 }
             }
