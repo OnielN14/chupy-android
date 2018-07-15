@@ -2,21 +2,32 @@ package com.chopchop.chupy;
 
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter;
+import com.chopchop.chupy.feature.read.adapter.TagItemClickListener;
+import com.chopchop.chupy.feature.read.adapter.TagSearchAdapter;
+import com.chopchop.chupy.model.Tag;
+import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
 
-import static android.content.ContentValues.TAG;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,10 +38,21 @@ public class FragmentRead extends Fragment {
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
     private ViewPager viewPager;
-    private SearchView searchView;
     private ReadFragmentPagerAdapter readFragmentPagerAdapter;
     private Resources res;
+
+    private RecyclerView tagRecyclerView;
+    private RecyclerView.Adapter tagAdapter;
+    private RecyclerView.LayoutManager tagLayoutManager;
+
+    private View searchPanel;
+    private EditText searchBar;
+    private ImageView searchButton;
+    private RelativeLayout searchArea;
+
     private String[] tabMenu;
+    private String[] dummyTags = {"Big Tits", "School Girl", "Vanilla", "Lolicon", "Milf", "Uncensored", "Romance", "Ahegao", "Maid", "Facial", "Fantasy", "Virgin"};
+    private List<Tag> tagList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -41,7 +63,20 @@ public class FragmentRead extends Fragment {
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar_read);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
+        searchPanel = (View) rootView.findViewById(R.id.linear_layout_search_tags);
+        searchPanel.setVisibility(View.GONE);
+
         mTabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout_read);
+
+        tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycled_view_tag_search);
+        tagLayoutManager = new FlowLayoutManager();
+        tagRecyclerView.setLayoutManager(tagLayoutManager);
+        tagAdapter = new TagSearchAdapter(dummyTags);
+        tagRecyclerView.setAdapter(tagAdapter);
+
+        for (String item: dummyTags) {
+            tagList.add(new Tag(item));
+        }
 
         res = getResources();
         tabMenu = res.getStringArray(R.array.read_tab_menu);
@@ -55,53 +90,73 @@ public class FragmentRead extends Fragment {
         viewPager.setAdapter(readFragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
-        searchView = (SearchView) rootView.findViewById(R.id.search_view_read);
+        tagRecyclerView.addOnItemTouchListener(new TagItemClickListener(getActivity(), tagRecyclerView, new TagItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClickListener(View v, int position) {
+                Toast.makeText(getActivity(), dummyTags[position], Toast.LENGTH_SHORT).show();
+                TextView textHolder = v.findViewById(R.id.text_view_tag_name);
+                int t = textHolder.getPaddingTop();
+                int b = textHolder.getPaddingBottom();
+                int r = textHolder.getPaddingRight();
+                int l = textHolder.getPaddingLeft();
+                if (tagList.get(position).getTagStatus() == 0){
+                    tagList.get(position).setTagStatus(1);
+                    textHolder.setBackground(getActivity().getDrawable(R.drawable.component_rounded_tag_active));
+                    textHolder.setTextColor(getActivity().getResources().getColor(R.color.colorPrimary));
+                }
+                else{
+                    tagList.get(position).setTagStatus(0);
+                    textHolder.setBackground(getActivity().getDrawable(R.drawable.component_rounded_tag));
+                    textHolder.setTextColor(Color.parseColor("#ffffff"));
+                }
 
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                textHolder.setPadding(l,t,r,b);
+            }
+
+            @Override
+            public void onItemLongClickListener(View v, int position) {
+
+            }
+        }));
+
+        searchArea = rootView.findViewById(R.id.relLayout);
+        searchBar = rootView.findViewById(R.id.input_search);
+        searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+
+                ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) searchArea.getLayoutParams();
                 final float scale = getActivity().getResources().getDisplayMetrics().density;
 
-                int l;
-                int r;
-                int t;
-                int b;
-
-
                 if (hasFocus){
-//                     convert the DP into pixel
-                    l =  (int)(0 * scale + 0.5f);
-                    r =  (int)(0 * scale + 0.5f);
-                    t =  (int)(0 * scale + 0.5f);
-                    b =  (int)(0 * scale + 0.5f);
 
-                    v.setBackground(getActivity().getDrawable(R.drawable.component_not_rounded_search_bar));
-                    marginLayoutParams.setMargins(l, t, r, b);
+                    searchArea.setBackground(getActivity().getDrawable(R.drawable.component_not_rounded_search_bar));
 
                     viewPager.setVisibility(View.GONE);
                     mTabLayout.setVisibility(View.GONE);
+                    searchPanel.setVisibility(View.VISIBLE);
+                    marginLayoutParams.setMargins(0,0,0,0);
 
                     v.requestLayout();
                 }
                 else{
-                    l =  (int)(8 * scale + 0.5f);
-                    r =  (int)(8 * scale + 0.5f);
-                    t =  (int)(8 * scale + 0.5f);
-                    b =  (int)(8 * scale + 0.5f);
+//                     convert the DP into pixel
+                    int l =  (int)(4 * scale + 0.5f);
+                    int r =  (int)(4 * scale + 0.5f);
+                    int t =  (int)(4 * scale + 0.5f);
+                    int b =  (int)(4 * scale + 0.5f);
 
-                    v.setBackground(getActivity().getDrawable(R.drawable.component_rounded_search_bar));
-                    marginLayoutParams.setMargins(l, t, r, b);
+                    searchArea.setBackground(getActivity().getDrawable(R.drawable.component_rounded_search_bar));
 
                     viewPager.setVisibility(View.VISIBLE);
                     mTabLayout.setVisibility(View.VISIBLE);
+                    searchPanel.setVisibility(View.GONE);
 
+                    marginLayoutParams.setMargins(t,l,r,b);
                     v.requestLayout();
                 }
             }
         });
-
-
 
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

@@ -6,4 +6,9 @@
         <item>Article</item>
         <item>Tips &amp; Trick</item>
     </string-array>
+    <string name="heading_search_tags">Tags</string>
+    <string name="description_search_tags">Use tags to help you find news, articles, or tips &amp; tricks</string>
+    <string name="news_other_segment">Other News</string>
+    <string name="articles_other_segment">Other Articles</string>
+    <string name="tips_other_segment">Other Tips &amp; Tricks</string>
 </resources>
