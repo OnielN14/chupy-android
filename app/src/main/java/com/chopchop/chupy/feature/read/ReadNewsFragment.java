@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
+import com.chopchop.chupy.feature.read.adapter.ReadMaterialSliderAdapter;
+import com.chopchop.chupy.feature.read.utilities.PicassoImageLoadingService;
 import com.chopchop.chupy.model.ReadMaterial;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public class ReadNewsFragment extends Fragment {
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
     private Slider slider;
+    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
+
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
 
     @Override
@@ -38,7 +42,11 @@ public class ReadNewsFragment extends Fragment {
         readMaterialRecyclerViewAdapter = new ReadMaterialRecyclerViewAdapter(readMaterialList);
         itemsRecyclerView.setAdapter(readMaterialRecyclerViewAdapter);
 
+        Slider.init(new PicassoImageLoadingService(getActivity()));
         slider = rootView.findViewById(R.id.slider_top_read_material);
+        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
+        slider.setAdapter(readMaterialSliderAdapter);
+
 
         return rootView;
     }
