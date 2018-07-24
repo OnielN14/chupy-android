@@ -184,7 +184,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                 List<CobaJson> list= response.body().getData();
 
                 for (int i = 0; i<list.size(); i++){
-                    petShop1(list.get(i).getTitle(),Double.valueOf(list.get(i).getLatitude()),Double.valueOf(list.get(i).getLongitude()), list.get(i).getInclude(),list.get(i).getAddress());
+                    petShop1(list.get(i).getNama(),Double.valueOf(list.get(i).getLatitude()),Double.valueOf(list.get(i).getLongitude()), list.get(i).getDeskripsi(),list.get(i).getAlamat());
                     mHashMap.put(mMarker, Integer.valueOf(list.get(i).getId()));
                 }
             }
@@ -498,20 +498,20 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         }
     };
 
-    private void petShop1(String title, double lat, double longitude, String include, String address){
+    private void petShop1(String nama, Double latitude, Double longitude, String deskripsi, String alamat){
         Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
         BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
 
         MarkerOptions options = new MarkerOptions()
-                    .position(new LatLng(lat, longitude))
-                    .title(title)
-                .snippet(include)
+                    .position(new LatLng(latitude, longitude))
+                    .title(nama)
+                .snippet(deskripsi)
                     .icon(markerIcon);
 
         PlaceInfo info = new PlaceInfo();
         info.setImage("contoh1");
 //        info.setAddress(include);
-        info.setAddress(address);
+        info.setAddress(alamat);
 
         CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
         mMap.setInfoWindowAdapter(customInfoWindow);

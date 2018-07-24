@@ -9,7 +9,7 @@ public class ApiClient {
     public static Retrofit getApiClient(){
         if (retrofit == null){
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.43.109/chup/")
+                    .baseUrl("https://chuppy-rpl.azurewebsites.net/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

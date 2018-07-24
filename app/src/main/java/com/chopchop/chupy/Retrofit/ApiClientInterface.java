@@ -9,7 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface ApiClientInterface {
-    @GET("coba.php")
+    @GET("api/petshops")
     Call<Example> get();
 
     @GET("detail.php/{id}")

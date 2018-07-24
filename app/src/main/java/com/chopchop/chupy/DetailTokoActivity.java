@@ -72,7 +72,7 @@ public class DetailTokoActivity extends AppCompatActivity {
             @Override
             public void onResponse(retrofit2.Call<Example> call, Response<Example> response) {
                 List<CobaJson> list= response.body().getData();
-                Log.d("Detail", list.get(0).getTitle());
+                Log.d("Detail", list.get(0).getNama());
             }
 
             @Override
