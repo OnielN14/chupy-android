@@ -8,16 +8,14 @@ import android.view.View;
 
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
 
-public class TagItemClickListener implements RecyclerView.OnItemTouchListener{
+public class ReadMaterialItemClickListener implements RecyclerView.OnItemTouchListener {
 
     private OnItemClickListener mListener;
     private GestureDetector mGestureDetector;
 
-
-    public TagItemClickListener(Context context, final RecyclerView recyclerView , final OnItemClickListener mListener) {
+    public ReadMaterialItemClickListener(Context context, final RecyclerView recyclerView, final OnItemClickListener mListener) {
         this.mListener = mListener;
         this.mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
-
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 return true;

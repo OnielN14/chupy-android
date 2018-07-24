@@ -1,15 +1,17 @@
 package com.chopchop.chupy.model;
 
 public class Tag {
+    private int id;
     private String tagName;
     private int tagStatus = 0;
 
-    public Tag(String tagName) {
+    public Tag(int id, String tagName) {
+        this.id = id;
         this.tagName = tagName;
     }
 
-    public Tag(String tagName, int tagStatus) {
-        this(tagName);
+    public Tag(int id, String tagName, int tagStatus) {
+        this(id, tagName);
         this.tagStatus = tagStatus;
     }
 
@@ -27,5 +29,13 @@ public class Tag {
 
     public void setTagStatus(int tagStatus) {
         this.tagStatus = tagStatus;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

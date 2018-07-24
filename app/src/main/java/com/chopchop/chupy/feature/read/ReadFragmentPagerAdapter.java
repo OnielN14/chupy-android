@@ -4,6 +4,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.chopchop.chupy.FragmentRead;
+import com.chopchop.chupy.model.ReadMaterial;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReadFragmentPagerAdapter extends FragmentStatePagerAdapter {
     private Fragment fragment;
     private int nMenu;
@@ -33,6 +39,17 @@ public class ReadFragmentPagerAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
 
+    public static List<ReadMaterial> categorizedReadMaterial(List<ReadMaterial> readMaterialList, int readMaterialCategory) {
+        List<ReadMaterial> tempList = new ArrayList<>();
+        for (ReadMaterial item : readMaterialList){
+            if (item.getCategoryId() == readMaterialCategory){
+                tempList.add(item);
+            }
+        }
+
+        return tempList;
+    }
+
     @Override
     public CharSequence getPageTitle(int position) {
 
@@ -43,4 +60,6 @@ public class ReadFragmentPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return nMenu;
     }
+
+
 }

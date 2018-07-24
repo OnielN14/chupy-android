@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.model.Tag;
+
+import java.util.List;
 
 public class TagSearchAdapter extends RecyclerView.Adapter<TagSearchAdapter.ViewHolder> {
-    private String[] dataSet;
+    private List<Tag> dataSet;
 
-    public TagSearchAdapter(String[] dummyTags) {
+    public TagSearchAdapter(List<Tag> dummyTags) {
         this.dataSet = dummyTags;
     }
 
@@ -26,12 +29,12 @@ public class TagSearchAdapter extends RecyclerView.Adapter<TagSearchAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tagName.setText(dataSet[position]);
+        holder.tagName.setText(dataSet.get(position).getTagName());
     }
 
     @Override
     public int getItemCount() {
-        return dataSet.length;
+        return dataSet.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

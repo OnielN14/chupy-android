@@ -1,18 +1,27 @@
 package com.chopchop.chupy.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReadMaterial {
     private int id;
     private String title;
     private String description;
     private String date;
-    private String imageName;
+    private String categoryName;
+    private int categoryId;
+    private List<Tag> tagList;
+    private Photo photo;
 
-    public ReadMaterial(int id, String title, String description, String date, String imageName) {
+    public ReadMaterial(int id, String title, String description, String categoryName, int categoryId, String date, Photo photo, List<Tag> tagList) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.categoryName = categoryName;
+        this.categoryId = categoryId;
         this.date = date;
-        this.imageName = imageName;
+        this.photo = photo;
+        this.tagList = tagList;
     }
 
     public int getId() {
@@ -47,11 +56,37 @@ public class ReadMaterial {
         this.date = date;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public List<Tag> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<Tag> tagList) {
+        this.tagList = tagList;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
+
 }
+

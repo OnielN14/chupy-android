@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,22 +17,37 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter;
 import com.chopchop.chupy.feature.read.adapter.TagItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.TagSearchAdapter;
+import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
+import com.chopchop.chupy.feature.read.utilities.ReadMaterialController;
+import com.chopchop.chupy.model.Photo;
+import com.chopchop.chupy.model.ReadMaterial;
 import com.chopchop.chupy.model.Tag;
+import com.chopchop.chupy.utilities.ChupyService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.xiaofeng.flowlayoutmanager.FlowLayoutManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FragmentRead extends Fragment {
+
+    ReadMaterialController controller = new ReadMaterialController();
 
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
@@ -51,8 +65,11 @@ public class FragmentRead extends Fragment {
     private RelativeLayout searchArea;
 
     private String[] tabMenu;
-    private String[] dummyTags = {"Big Tits", "School Girl", "Vanilla", "Lolicon", "Milf", "Uncensored", "Romance", "Ahegao", "Maid", "Facial", "Fantasy", "Virgin"};
-    private List<Tag> tagList = new ArrayList<>();
+//    private String[] dummyTags = {"Big Tits", "School Girl", "Vanilla", "Lolicon", "Milf", "Uncensored", "Romance", "Ahegao", "Maid", "Facial", "Fantasy", "Virgin"};
+
+    public static List<Tag> tagList = new ArrayList<>();
+    public static List<ReadMaterial> readMaterialList = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -71,12 +88,8 @@ public class FragmentRead extends Fragment {
         tagRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycled_view_tag_search);
         tagLayoutManager = new FlowLayoutManager();
         tagRecyclerView.setLayoutManager(tagLayoutManager);
-        tagAdapter = new TagSearchAdapter(dummyTags);
-        tagRecyclerView.setAdapter(tagAdapter);
 
-        for (String item: dummyTags) {
-            tagList.add(new Tag(item));
-        }
+
 
         res = getResources();
         tabMenu = res.getStringArray(R.array.read_tab_menu);
@@ -87,13 +100,15 @@ public class FragmentRead extends Fragment {
 
         readFragmentPagerAdapter = new ReadFragmentPagerAdapter(getActivity().getSupportFragmentManager(), mTabLayout.getTabCount());
         viewPager = (ViewPager) rootView.findViewById(R.id.view_pager_read);
-        viewPager.setAdapter(readFragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
-        tagRecyclerView.addOnItemTouchListener(new TagItemClickListener(getActivity(), tagRecyclerView, new TagItemClickListener.OnItemClickListener() {
+
+        fetchReadMaterialAndSetupAdapter();
+
+        tagRecyclerView.addOnItemTouchListener(new TagItemClickListener(getActivity(), tagRecyclerView, new OnItemClickListener() {
             @Override
             public void onItemClickListener(View v, int position) {
-                Toast.makeText(getActivity(), dummyTags[position], Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), dummyTags[position], Toast.LENGTH_SHORT).show();
                 TextView textHolder = v.findViewById(R.id.text_view_tag_name);
                 int t = textHolder.getPaddingTop();
                 int b = textHolder.getPaddingBottom();
@@ -177,5 +192,82 @@ public class FragmentRead extends Fragment {
 
         return rootView;
     }
+
+    private void fetchReadMaterialAndSetupAdapter(){
+        controller.fetchReadMaterialCall().enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                readMaterialList = parseDataFromService(response.body());
+
+                tagAdapter = new TagSearchAdapter(tagList);
+
+                viewPager.setAdapter(readFragmentPagerAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private List<ReadMaterial> parseDataFromService(JsonObject response){
+
+        List<ReadMaterial> tempReadMaterials = new ArrayList<>();
+        List<Tag> contentTagList, tempGlobalTagList = new ArrayList<>();
+        Photo tempPhoto;
+        JsonArray data = response.getAsJsonArray("data");
+        for (JsonElement item: data) {
+
+
+            if (item.getAsJsonObject().get("foto").getAsJsonArray().size() != 0){
+                tempPhoto = parsePhotoFromData(item.getAsJsonObject().get("foto").getAsJsonArray().get(0));
+            }
+            else{
+                tempPhoto = null;
+            }
+
+            contentTagList = parseTagFromContent(item.getAsJsonObject().get("tag"));
+
+            tempGlobalTagList.addAll(contentTagList);
+
+            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), "24 Juli 2018", tempPhoto, contentTagList));
+
+        }
+
+        initiateTagRecyclerView(tempGlobalTagList);
+
+        return tempReadMaterials;
+    }
+
+    private void initiateTagRecyclerView(List<Tag> tempTagList) {
+
+        tagList.clear();
+
+        Set<String> title = new HashSet<>();
+        for (Tag item : tempTagList){
+            if (title.add(item.getTagName())){
+                tagList.add(item);
+            }
+        }
+
+
+        tagAdapter = new TagSearchAdapter(tagList);
+        tagRecyclerView.setAdapter(tagAdapter);
+    }
+
+    private List<Tag> parseTagFromContent(JsonElement tag) {
+        List<Tag> tempTag = new ArrayList<>();
+        for (JsonElement item : tag.getAsJsonArray()){
+            tempTag.add(new Tag(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("tag").getAsString()));
+        }
+
+        return tempTag;
+    }
+
+    private Photo parsePhotoFromData(JsonElement foto){
+        return new Photo(foto.getAsJsonObject().get("id").getAsInt(), foto.getAsJsonObject().get("foto").getAsString(), ChupyService.baseUrl);
+    }
+
 
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.model.ReadMaterial;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -18,6 +19,11 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
 
     public ReadMaterialRecyclerViewAdapter(List<ReadMaterial> readMaterialList) {
         this.readMaterialList = readMaterialList;
+    }
+
+    public void updateData(List<ReadMaterial> readMaterialList){
+        this.readMaterialList = readMaterialList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -58,7 +64,12 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
         public void bindData(ReadMaterial item){
 
             // dummy image
-            itemThumbnail.setBackground(itemView.getResources().getDrawable(R.drawable.chupy_box));
+            if (item.getPhoto() == null){
+                itemThumbnail.setBackground(itemView.getResources().getDrawable(R.drawable.chupy_box));
+            }
+            else{
+                Picasso.get().load(item.getPhoto().getHost()+'/'+item.getPhoto().getUrl()).into(itemThumbnail);
+            }
 
             String tempTitle = item.getTitle();
             if (item.getTitle().length() > 40){

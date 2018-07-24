@@ -2,7 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="4dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +17,8 @@
             android:id="@+id/image_view_item_thumbnail"
             android:layout_width="@dimen/chupy_read_item_image_width"
             android:layout_height="match_parent"
-            android:background="@drawable/chupy_box"
+            android:src="@drawable/chupy_box"
+            android:scaleType="centerCrop"
             />
 
         <LinearLayout
@@ -26,14 +31,14 @@
                 android:id="@+id/text_view_item_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="20 Jul 2018"
+                tools:text="20 Jul 2018"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/text_view_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TEST"
+                tools:text="TEST"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -41,7 +46,7 @@
                 android:id="@+id/text_view_item_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="This is just a description of the item. You don't need to worry about this, you only need to change the value of ..." />
+                tools:text="This is just a description of the item. You don't need to worry about this, you only need to change the value of ..." />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
