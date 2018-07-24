@@ -1,4 +1,4 @@
-package com.chopchop.chupy;
+package com.chopchop.chupy.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chopchop.chupy.R;
 import com.chopchop.chupy.models.InfoWindowData;
 import com.chopchop.chupy.models.PlaceInfo;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,16 +32,18 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         TextView tvInclude = (TextView) view.findViewById(R.id.include);
         TextView tvAddress = (TextView) view.findViewById(R.id.address);
 
+
         tvTitle.setText(marker.getTitle());
         tvInclude.setText(marker.getSnippet());
 
-        PlaceInfo infoWindowData = (PlaceInfo) marker.getTag();
+        PlaceInfo placeInfo = (PlaceInfo) marker.getTag();
 
-        int imageId = mContext.getResources().getIdentifier(infoWindowData.getImage().toLowerCase(),"drawable", mContext.getPackageName());
+        int imageId = mContext.getResources().getIdentifier(placeInfo.getImage().toLowerCase(),"drawable", mContext.getPackageName());
         tvImage.setImageResource(imageId);
 
-        tvAddress.setText(infoWindowData.getAddress());
 
+//        tvInclude.setText(placeInfo.getInclude());
+        tvAddress.setText(placeInfo.getAddress());
     }
 
     @Override

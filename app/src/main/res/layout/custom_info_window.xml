@@ -13,7 +13,7 @@
         android:id="@+id/icon_places"
         android:src="@drawable/coroshop"
         android:layout_alignParentLeft="true"
-        android:scaleType="fitCenter"/>
+        android:scaleType="centerCrop"/>
 
     <RelativeLayout
         android:layout_marginLeft="4dp"

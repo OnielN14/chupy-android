@@ -2,17 +2,15 @@ package com.chopchop.chupy;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,17 +21,19 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chopchop.chupy.models.InfoWindowData;
+import com.chopchop.chupy.Adapter.CustomInfoWindowAdapter;
+import com.chopchop.chupy.Retrofit.ApiClient;
+import com.chopchop.chupy.Retrofit.ApiClientInterface;
+import com.chopchop.chupy.models.CobaJson;
+import com.chopchop.chupy.models.Example;
 import com.chopchop.chupy.models.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,7 +47,6 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -64,9 +63,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class FragmentPetService extends Fragment implements OnMapReadyCallback,
-        GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnInfoWindowClickListener{
+        GoogleApiClient.OnConnectionFailedListener{
 
     public FragmentPetService() {
         // Required empty public constructor
@@ -85,9 +87,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         Toast.makeText(getContext(), "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-        petShop1();
+//        petShop1();
 
-        mMap.setOnInfoWindowClickListener(this);
 
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
@@ -105,11 +106,12 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
     }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(getContext(), "Info window clicked",
-                Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onInfoWindowClick(Marker marker) {
+//        Toast.makeText(getContext(), "Info window clicked",
+//                Toast.LENGTH_SHORT).show();
+//
+//    }
 
     private static final String TAG = "FragmentPetService";
 
@@ -119,7 +121,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     private static final float DEFAULT_ZOOM = 15f;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
 
-    private static final LatLng PetShop1 = new LatLng(-6.8898286,107.6168761);
+//    private static final LatLng PetShop1 = new LatLng(-6.8898286,107.6168761);
 
     //Widget
     private AutoCompleteTextView mSearchText;
@@ -134,9 +136,13 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
     private Marker mMarker;
+    private HashMap<Marker, Integer> mHashMap = new HashMap<Marker, Integer>();
+
+    private ApiClientInterface apiClientInterface;
 
 
     private View view;
+    private CobaJson coba;
 
 
 
@@ -149,9 +155,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
         mGps = (ImageView) view.findViewById(R.id.ic_gps);
 
-
-
-
         imgSearchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,11 +164,37 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         });
 
 
+        coba = new CobaJson();
+        getMarker();
+
+
         getLocationPermission();
         return view;
 
     }
 
+
+    private void getMarker(){
+        Log.d("marker","zzzz");
+        apiClientInterface = ApiClient.getApiClient().create(ApiClientInterface.class);
+        retrofit2.Call<Example> call = apiClientInterface.get();
+        call.enqueue(new Callback<Example>() {
+            @Override
+            public void onResponse(retrofit2.Call<Example> call, Response<Example> response) {
+                List<CobaJson> list= response.body().getData();
+
+                for (int i = 0; i<list.size(); i++){
+                    petShop1(list.get(i).getTitle(),Double.valueOf(list.get(i).getLatitude()),Double.valueOf(list.get(i).getLongitude()), list.get(i).getInclude(),list.get(i).getAddress());
+                    mHashMap.put(mMarker, Integer.valueOf(list.get(i).getId()));
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<Example> call, Throwable t) {
+
+            }
+        });
+    }
 
 
 
@@ -194,7 +223,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                         || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
 
                     //execute our method for searching
-                    petShop1();
+//                    petShop1();
                     geoLocate();
                     return true;
                 }
@@ -206,7 +235,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 getDeviceLocation();
-                petShop1();
+//                petShop1();
             }
         });
 
@@ -225,6 +254,18 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     Log.d(TAG, "onClick: NullPointerException " + e.getMessage());
                 }
                 return false;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Log.d("Marker ID", String.valueOf(mHashMap.get(marker)));
+                Intent intent = new Intent(getContext(), DetailTokoActivity.class);
+                intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
+                intent.putExtra("title", marker.getTitle());
+
+                startActivity(intent);
             }
         });
         hideSoftKeyboard();
@@ -313,7 +354,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 //                        .title(placeInfo.getName())
 //                        .snippet(snippet);
 //                mMarker = mMap.addMarker(options);
-                petShop1();
+//                petShop1();
 
             }catch (NullPointerException e){
                 Log.d(TAG, "moveCamera: NUllPointerExceprion: " + e.getMessage());
@@ -333,7 +374,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 //                    .position(latLng)
 //                    .title(title);
 //            mMap.addMarker(options);
-            petShop1();
+//            petShop1();
         }
 
         hideSoftKeyboard();
@@ -395,7 +436,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     }
 
     private void hideSoftKeyboard(){
-        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
@@ -411,6 +453,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+//            petShop1();
         }
     };
 
@@ -450,32 +493,25 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
             moveCamera(new LatLng(place.getViewport().getCenter().latitude,
                     place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace);
-
+//            petShop1();
             places.release();
         }
     };
 
-    private void petShop1(){
+    private void petShop1(String title, double lat, double longitude, String include, String address){
         Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
         BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
 
-
-
-//         Marker melbourne = mMap.addMarker(new MarkerOptions()
-//                .position(MELBOURNE)
-//                .title("Petshop Coro Goyang")
-//                .snippet().snippet()
-//                .icon(markerIcon));
-
         MarkerOptions options = new MarkerOptions()
-                    .position(PetShop1)
-                    .title("Coro Shop")
-                    .snippet("Include Plus+")
+                    .position(new LatLng(lat, longitude))
+                    .title(title)
+                .snippet(include)
                     .icon(markerIcon);
 
         PlaceInfo info = new PlaceInfo();
-        info.setImage("icon_menu_pet_service");
-        info.setAddress("Jl.Bandung");
+        info.setImage("contoh1");
+//        info.setAddress(include);
+        info.setAddress(address);
 
         CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
         mMap.setInfoWindowAdapter(customInfoWindow);
@@ -483,10 +519,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         mMarker = mMap.addMarker(options);
 
         mMarker.setTag(info);
-
-
-
-
     }
 
 
