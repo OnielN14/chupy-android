@@ -14,7 +14,7 @@
         android:gravity="bottom"
         sothree:umanoPanelHeight="30dp"
         sothree:umanoShadowHeight="4dp"
-        android:background="@drawable/white_nearby">
+        android:background="@drawable/shape_rectangle">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"

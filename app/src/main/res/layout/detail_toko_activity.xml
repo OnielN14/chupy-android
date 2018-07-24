@@ -51,9 +51,37 @@
             android:layout_height="match_parent"
             android:padding="10dp">
             <TextView
+                android:id="@+id/detNama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ahayyyyyyyy"/>
+                android:text="Nama Toko"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detNama"
+                android:layout_marginTop="10dp"
+                android:id="@+id/detDeskripsi"
+                android:text="Deskripsi Penjualan Toko"/>
+
+            <TextView
+                android:id="@+id/detProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detDeskripsi"
+                android:text="Product"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"/>
+            <ImageView
+                android:id="@+id/imgProduct"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_below="@id/detProduct"
+                android:src="@drawable/contoh1"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_rectangle"/>
+
 
         </RelativeLayout>
 
