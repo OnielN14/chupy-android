@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="chupy_banner_height">250dp</dimen>
+    <dimen name="chupy_read_item_image_width">100dp</dimen>
+    <dimen name="chupy_read_item_height">100dp</dimen>
+    <dimen name="chupy_read_item_image_height">250dp</dimen>
+</resources>

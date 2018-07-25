@@ -316,7 +316,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: found location!");
+
                             Location currentLocation = (Location) task.getResult();
+
+//                            kalo lokasi isinya null
+                            if(currentLocation == null){
+                                LocationManager locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
+
+                                currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            }
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM,

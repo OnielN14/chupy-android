@@ -29,6 +29,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailTokoActivity"></activity>
+        <activity android:name=".feature.read.ReadDetail"></activity>
     </application>
 
 </manifest>
