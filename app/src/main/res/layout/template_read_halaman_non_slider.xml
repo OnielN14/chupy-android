@@ -12,12 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ss.com.bannerslider.Slider
-            android:id="@+id/slider_top_read_material"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/chupy_banner_height">
-        </ss.com.bannerslider.Slider>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +23,7 @@
                 android:id="@+id/text_view_other_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="@string/news_other_segment"
+                tools:text="@string/search_result_page_title"
                 android:layout_marginBottom="8dp"
                 android:textStyle="bold"/>
 

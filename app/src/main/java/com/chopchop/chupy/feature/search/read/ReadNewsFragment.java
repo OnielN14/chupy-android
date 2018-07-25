@@ -1,4 +1,4 @@
-package com.chopchop.chupy.feature.read;
+package com.chopchop.chupy.feature.search.read;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.feature.read.ReadDetail;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialSliderAdapter;
@@ -27,26 +28,19 @@ import ss.com.bannerslider.Slider;
 
 import static com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter.categorizedReadMaterial;
 
-public class ReadArticleFragment extends Fragment {
+public class ReadNewsFragment extends Fragment {
 
-    private TextView otherSectionTitle;
     private RecyclerView itemsRecyclerView;
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
-    private Slider slider;
-    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
-
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
-    private int readMaterialCategory = 2;
+    private int readMaterialCategory = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.template_read_halaman, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.template_read_halaman_non_slider, container, false);
 
-        readMaterialList = categorizedReadMaterial(FragmentRead.readMaterialList, readMaterialCategory);
-
-        otherSectionTitle = rootView.findViewById(R.id.text_view_other_section);
-        otherSectionTitle.setText(getResources().getString(R.string.articles_other_segment));
+        readMaterialList = categorizedReadMaterial(FragmentRead.searchReadMaterialList, readMaterialCategory);
 
         itemsRecyclerView = rootView.findViewById(R.id.recycled_view_other_item);
         itemsRecyclerView.setHasFixedSize(true);
@@ -54,10 +48,6 @@ public class ReadArticleFragment extends Fragment {
         readMaterialRecyclerViewAdapter = new ReadMaterialRecyclerViewAdapter(readMaterialList);
         itemsRecyclerView.setAdapter(readMaterialRecyclerViewAdapter);
 
-        Slider.init(new PicassoImageLoadingService(getActivity()));
-        slider = rootView.findViewById(R.id.slider_top_read_material);
-        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
-        slider.setAdapter(readMaterialSliderAdapter);
 
         itemsRecyclerView.addOnItemTouchListener(new ReadMaterialItemClickListener(getContext(), itemsRecyclerView, new OnItemClickListener() {
             @Override
@@ -72,6 +62,7 @@ public class ReadArticleFragment extends Fragment {
             }
         }));
 
+
         return rootView;
     }
 
@@ -82,4 +73,5 @@ public class ReadArticleFragment extends Fragment {
         startActivity(intent);
 
     }
+
 }

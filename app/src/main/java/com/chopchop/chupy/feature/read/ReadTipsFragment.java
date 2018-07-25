@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
@@ -28,6 +29,7 @@ import static com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter.categoriz
 
 public class ReadTipsFragment extends Fragment {
 
+    private TextView otherSectionTitle;
     private RecyclerView itemsRecyclerView;
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
@@ -35,13 +37,16 @@ public class ReadTipsFragment extends Fragment {
     private ReadMaterialSliderAdapter readMaterialSliderAdapter;
 
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
-    private int readMaterialCategory = 2;
+    private int readMaterialCategory = 3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.template_read_halaman, container, false);
 
         readMaterialList = categorizedReadMaterial(FragmentRead.readMaterialList, readMaterialCategory);
+
+        otherSectionTitle = rootView.findViewById(R.id.text_view_other_section);
+        otherSectionTitle.setText(getResources().getString(R.string.tips_other_segment));
 
         itemsRecyclerView = rootView.findViewById(R.id.recycled_view_other_item);
         itemsRecyclerView.setHasFixedSize(true);

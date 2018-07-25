@@ -15,6 +15,8 @@ public class ReadMaterialSliderAdapter extends SliderAdapter{
         this.readMaterialList = readMaterialList;
     }
 
+
+
     @Override
     public int getItemCount() {
         return readMaterialList.size();

@@ -10,19 +10,24 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter;
 import com.chopchop.chupy.feature.read.adapter.TagItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.TagSearchAdapter;
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
 import com.chopchop.chupy.feature.read.utilities.ReadMaterialController;
+import com.chopchop.chupy.feature.search.read.SearchReadFragmentPagerAdapter;
 import com.chopchop.chupy.model.Photo;
 import com.chopchop.chupy.model.ReadMaterial;
 import com.chopchop.chupy.model.Tag;
@@ -36,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,6 +59,7 @@ public class FragmentRead extends Fragment {
     private TabLayout mTabLayout;
     private ViewPager viewPager;
     private ReadFragmentPagerAdapter readFragmentPagerAdapter;
+    private SearchReadFragmentPagerAdapter searchReadFragmentPagerAdapter;
     private Resources res;
 
     private RecyclerView tagRecyclerView;
@@ -64,18 +71,24 @@ public class FragmentRead extends Fragment {
     private ImageView searchButton;
     private RelativeLayout searchArea;
 
+    private LinearLayout loadingArea;
+
     private String[] tabMenu;
-//    private String[] dummyTags = {"Big Tits", "School Girl", "Vanilla", "Lolicon", "Milf", "Uncensored", "Romance", "Ahegao", "Maid", "Facial", "Fantasy", "Virgin"};
+    private int readMaterialCategory[] = {1, 2, 3};
 
     public static List<Tag> tagList = new ArrayList<>();
-    public static List<ReadMaterial> readMaterialList = new ArrayList<>();
+    public static List<Tag> choosenTagList = new ArrayList<>();
 
+    public static List<ReadMaterial> readMaterialList = new ArrayList<>();
+    public static List<ReadMaterial> searchReadMaterialList = new ArrayList<>();
+
+    private ViewGroup rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_read, container, false);
+        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_read, container, false);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar_read);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
@@ -89,7 +102,7 @@ public class FragmentRead extends Fragment {
         tagLayoutManager = new FlowLayoutManager();
         tagRecyclerView.setLayoutManager(tagLayoutManager);
 
-
+        loadingArea = rootView.findViewById(R.id.linear_layout_loading);
 
         res = getResources();
         tabMenu = res.getStringArray(R.array.read_tab_menu);
@@ -98,17 +111,17 @@ public class FragmentRead extends Fragment {
         }
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        readFragmentPagerAdapter = new ReadFragmentPagerAdapter(getActivity().getSupportFragmentManager(), mTabLayout.getTabCount());
+        readFragmentPagerAdapter = new ReadFragmentPagerAdapter(getChildFragmentManager(), tabMenu);
+        searchReadFragmentPagerAdapter = new SearchReadFragmentPagerAdapter(getChildFragmentManager(), tabMenu.length);
+
         viewPager = (ViewPager) rootView.findViewById(R.id.view_pager_read);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-
 
         fetchReadMaterialAndSetupAdapter();
 
         tagRecyclerView.addOnItemTouchListener(new TagItemClickListener(getActivity(), tagRecyclerView, new OnItemClickListener() {
             @Override
             public void onItemClickListener(View v, int position) {
-//                Toast.makeText(getActivity(), dummyTags[position], Toast.LENGTH_SHORT).show();
                 TextView textHolder = v.findViewById(R.id.text_view_tag_name);
                 int t = textHolder.getPaddingTop();
                 int b = textHolder.getPaddingBottom();
@@ -118,11 +131,13 @@ public class FragmentRead extends Fragment {
                     tagList.get(position).setTagStatus(1);
                     textHolder.setBackground(getActivity().getDrawable(R.drawable.component_rounded_tag_active));
                     textHolder.setTextColor(getActivity().getResources().getColor(R.color.colorPrimary));
+                    choosenTagList.add(tagList.get(position));
                 }
                 else{
                     tagList.get(position).setTagStatus(0);
                     textHolder.setBackground(getActivity().getDrawable(R.drawable.component_rounded_tag));
                     textHolder.setTextColor(Color.parseColor("#ffffff"));
+                    choosenTagList.remove(tagList.get(position));
                 }
 
                 textHolder.setPadding(l,t,r,b);
@@ -136,6 +151,68 @@ public class FragmentRead extends Fragment {
 
         searchArea = rootView.findViewById(R.id.relLayout);
         searchBar = rootView.findViewById(R.id.input_search);
+
+        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                choosenTagList.clear();
+
+                if (actionId == EditorInfo.IME_ACTION_SEARCH){
+
+                    String searchText = v.getText().toString();
+
+                    List<ReadMaterial> tempResult = new ArrayList<>();
+
+                    if (searchText.length() == 0)
+                    {
+                        tempResult = readMaterialList;
+                    }
+                    else{
+                        Pattern p = Pattern.compile("["+searchText.toLowerCase()+"]");
+                        for (ReadMaterial item : readMaterialList){
+                            if (p.matcher(item.getTitle().toLowerCase()).lookingAt()){
+                                tempResult.add(item);
+                            }
+                        }
+                    }
+
+
+                    Set<String> itemTitles = new HashSet<>();
+
+
+                    if (choosenTagList.size() != 0){
+                        for(int j = 0; j < tempResult.size(); j++){
+
+                            for (int i = 0; i < tempResult.get(j).getTagList().size(); i++){
+
+                                if (choosenTagList.contains(tempResult.get(j).getTagList().get(i))){
+
+                                    if (itemTitles.add(tempResult.get(j).getTitle())){
+
+                                        searchReadMaterialList.add(tempResult.get(j));
+
+                                    }
+
+                                }
+                            }
+
+                        }
+
+//
+                    }
+                    else{
+                        searchReadMaterialList = tempResult;
+                    }
+
+                    showSearchResult();
+//                    return true;
+
+                }
+
+                return false;
+            }
+        });
+
         searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -193,6 +270,22 @@ public class FragmentRead extends Fragment {
         return rootView;
     }
 
+    private void showSearchResult() {
+
+        mTabLayout.removeAllTabs();
+        tabMenu = res.getStringArray(R.array.read_tab_menu);
+        int i = 0;
+        for (String menu: tabMenu) {
+            String menuTitle = menu + " ("+ categorizedReadMaterial(searchReadMaterialList, readMaterialCategory[i]).size() +")";
+            mTabLayout.addTab(mTabLayout.newTab().setText(menuTitle));
+
+            i++;
+        }
+        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        viewPager.setAdapter(searchReadFragmentPagerAdapter);
+
+    }
+
     private void fetchReadMaterialAndSetupAdapter(){
         controller.fetchReadMaterialCall().enqueue(new Callback<JsonObject>() {
             @Override
@@ -202,6 +295,7 @@ public class FragmentRead extends Fragment {
                 tagAdapter = new TagSearchAdapter(tagList);
 
                 viewPager.setAdapter(readFragmentPagerAdapter);
+                loadingArea.setVisibility(View.GONE);
             }
 
             @Override
@@ -269,5 +363,15 @@ public class FragmentRead extends Fragment {
         return new Photo(foto.getAsJsonObject().get("id").getAsInt(), foto.getAsJsonObject().get("foto").getAsString(), ChupyService.baseUrl);
     }
 
+    public static List<ReadMaterial> categorizedReadMaterial(List<ReadMaterial> readMaterialList, int readMaterialCategory) {
+        List<ReadMaterial> tempList = new ArrayList<>();
+        for (ReadMaterial item : readMaterialList){
+            if (item.getCategoryId() == readMaterialCategory){
+                tempList.add(item);
+            }
+        }
+
+        return tempList;
+    }
 
 }

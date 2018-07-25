@@ -1,4 +1,4 @@
-package com.chopchop.chupy.feature.read;
+package com.chopchop.chupy.feature.search.read;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,16 +10,16 @@ import com.chopchop.chupy.model.ReadMaterial;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReadFragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class SearchReadFragmentPagerAdapter extends FragmentStatePagerAdapter {
     private Fragment fragment;
-    private String[] nMenus;
+    private int nMenu;
 
-//    private String[] pageTitle = {"News","Article","Tips & Trick"};
+    private String[] pageTitle = {"News","Article","Tips & Trick"};
+//    private int readMaterialCategory[] = {1, 2, 3};
 
-    public ReadFragmentPagerAdapter(FragmentManager supportFragmentManager, String[] nMenus) {
+    public SearchReadFragmentPagerAdapter(FragmentManager supportFragmentManager, int nMenus) {
         super(supportFragmentManager);
-        this.nMenus = nMenus;
-
+        this.nMenu = nMenus;
     }
 
     @Override
@@ -40,26 +40,15 @@ public class ReadFragmentPagerAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
 
-    public static List<ReadMaterial> categorizedReadMaterial(List<ReadMaterial> readMaterialList, int readMaterialCategory) {
-        List<ReadMaterial> tempList = new ArrayList<>();
-        for (ReadMaterial item : readMaterialList){
-            if (item.getCategoryId() == readMaterialCategory){
-                tempList.add(item);
-            }
-        }
-
-        return tempList;
-    }
-
     @Override
     public CharSequence getPageTitle(int position) {
 
-        return nMenus[position];
+        return pageTitle[position];
     }
 
     @Override
     public int getCount() {
-        return nMenus.length;
+        return nMenu;
     }
 
 
