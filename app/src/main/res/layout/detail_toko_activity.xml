@@ -77,12 +77,55 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_below="@id/detProduct"
-                android:src="@drawable/contoh1"
+                android:src="@drawable/shape_rectangle"
                 android:scaleType="centerCrop"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/detLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgProduct"
+                android:text="Location"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"/>
+            <FrameLayout
+                android:id="@+id/mapLocation"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/detLocation">
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/detContact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mapLocation"
+                android:text="Contact"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detContact"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/shape_rectangle"/>
-
-
+                android:id="@+id/detAlamat"
+                android:text="Alamat : "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detAlamat"
+                android:layout_marginTop="6dp"
+                android:id="@+id/detStatus"
+                android:text="Status : "/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detStatus"
+                android:layout_marginTop="6dp"
+                android:id="@+id/detTelp"
+                android:text="No. Telephone : "/>
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>

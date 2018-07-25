@@ -12,7 +12,7 @@ public interface ApiClientInterface {
     @GET("api/petshops")
     Call<Example> get();
 
-    @GET("detail.php/{id}")
+    @GET("api/petshops/{id}")
     Call<Example> getDetail(@Path("id") int id);
 
 }
