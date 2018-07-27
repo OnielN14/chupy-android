@@ -93,6 +93,7 @@ public class FragmentRead extends Fragment {
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar_read);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
+        searchButton = rootView.findViewById(R.id.ic_magnify);
         searchPanel = (View) rootView.findViewById(R.id.linear_layout_search_tags);
         searchPanel.setVisibility(View.GONE);
 
@@ -118,6 +119,13 @@ public class FragmentRead extends Fragment {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
         fetchReadMaterialAndSetupAdapter();
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchKonten(searchBar);
+            }
+        });
 
         tagRecyclerView.addOnItemTouchListener(new TagItemClickListener(getActivity(), tagRecyclerView, new OnItemClickListener() {
             @Override
@@ -155,58 +163,11 @@ public class FragmentRead extends Fragment {
         searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                choosenTagList.clear();
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH){
-
-                    String searchText = v.getText().toString();
-
-                    List<ReadMaterial> tempResult = new ArrayList<>();
-
-                    if (searchText.length() == 0)
-                    {
-                        tempResult = readMaterialList;
-                    }
-                    else{
-                        Pattern p = Pattern.compile("["+searchText.toLowerCase()+"]");
-                        for (ReadMaterial item : readMaterialList){
-                            if (p.matcher(item.getTitle().toLowerCase()).lookingAt()){
-                                tempResult.add(item);
-                            }
-                        }
-                    }
 
 
-                    Set<String> itemTitles = new HashSet<>();
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO){
 
-
-                    if (choosenTagList.size() != 0){
-                        for(int j = 0; j < tempResult.size(); j++){
-
-                            for (int i = 0; i < tempResult.get(j).getTagList().size(); i++){
-
-                                if (choosenTagList.contains(tempResult.get(j).getTagList().get(i))){
-
-                                    if (itemTitles.add(tempResult.get(j).getTitle())){
-
-                                        searchReadMaterialList.add(tempResult.get(j));
-
-                                    }
-
-                                }
-                            }
-
-                        }
-
-//
-                    }
-                    else{
-                        searchReadMaterialList = tempResult;
-                    }
-
-                    showSearchResult();
-//                    return true;
-
+                    searchKonten(v);
                 }
 
                 return false;
@@ -268,6 +229,48 @@ public class FragmentRead extends Fragment {
         });
 
         return rootView;
+    }
+
+
+    private void searchKonten(TextView v) {
+        String searchText = v.getText().toString();
+
+        List<ReadMaterial> tempResult = new ArrayList<>();
+
+        if (searchText.length() == 0)
+        {
+            tempResult = readMaterialList;
+        }
+        else{
+            Pattern p = Pattern.compile("["+searchText.toLowerCase()+"]");
+            for (ReadMaterial item : readMaterialList){
+                if (p.matcher(item.getTitle().toLowerCase()).lookingAt()){
+                    tempResult.add(item);
+                }
+            }
+        }
+
+        Set<String> itemTitles = new HashSet<>();
+
+        if (choosenTagList.size() != 0){
+            for(int j = 0; j < tempResult.size(); j++){
+
+                for (int i = 0; i < tempResult.get(j).getTagList().size(); i++){
+
+                    if (choosenTagList.contains(tempResult.get(j).getTagList().get(i))){
+
+                        if (itemTitles.add(tempResult.get(j).getTitle())){
+                            searchReadMaterialList.add(tempResult.get(j));
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            searchReadMaterialList = tempResult;
+        }
+
+        showSearchResult();
     }
 
     private void showSearchResult() {

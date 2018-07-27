@@ -24,7 +24,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=">w<"
+        android:text="@string/emergency_emot"
         android:textSize="46sp"
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"/>
