@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentPetService">
+    tools:context=".FragmentPetService"
+    android:fitsSystemWindows="true">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".Fragment.FragmentPetService"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="30dp"
+        sothree:umanoShadowHeight="4dp"
+        android:background="@drawable/white_border">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            tools:context=".Fragment.FragmentPetService" />
+
+        <include
+            layout="@layout/fragment_nearby"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"/>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,9 +52,10 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_magnify" />
+            android:src="@drawable/ic_magnify"
+            />
 
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@+id/ic_magnify"
@@ -41,10 +64,26 @@
             android:textColor="#000"
             android:id="@+id/input_search"
             android:background="@null"
+            android:singleLine="true"
             android:hint="Search pet shop"
-            android:imeOptions="actionSearch"
-            android:layout_marginLeft="20dp" />
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:imeOptions="actionSearch" />
 
     </RelativeLayout>
 
-</FrameLayout>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relLayout"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_gps"
+        android:src="@drawable/ic_gps"
+        android:background="@drawable/ic_for_gps"
+        android:elevation="3dp"/>
+
+</RelativeLayout>
