@@ -3,6 +3,7 @@ package com.chopchop.chupy.feature.read;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ss.com.bannerslider.Slider;
+import ss.com.bannerslider.indicators.CircleIndicator;
 
 import static com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter.categorizedReadMaterial;
 
@@ -33,11 +35,14 @@ public class ReadNewsFragment extends Fragment {
     private RecyclerView itemsRecyclerView;
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
-    private Slider slider;
-    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
+//    private Slider slider;
+//    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
 
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
     private int readMaterialCategory = 1;
+
+    private ViewPager viewPagerImageSlider;
+    private CircleIndicator circleIndicatorImageSlider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,10 +59,13 @@ public class ReadNewsFragment extends Fragment {
         readMaterialRecyclerViewAdapter = new ReadMaterialRecyclerViewAdapter(readMaterialList);
         itemsRecyclerView.setAdapter(readMaterialRecyclerViewAdapter);
 
-        Slider.init(new PicassoImageLoadingService(getActivity()));
-        slider = rootView.findViewById(R.id.slider_top_read_material);
-        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
-        slider.setAdapter(readMaterialSliderAdapter);
+        viewPagerImageSlider = rootView.findViewById(R.id.view_pager_read_image_slider);
+        circleIndicatorImageSlider = rootView.findViewById(R.id.cicle_indicator_slider);
+
+//        Slider.init(new PicassoImageLoadingService(getActivity()));
+//        slider = rootView.findViewById(R.id.slider_top_read_material);
+//        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
+//        slider.setAdapter(readMaterialSliderAdapter);
 
         itemsRecyclerView.addOnItemTouchListener(new ReadMaterialItemClickListener(getContext(), itemsRecyclerView, new OnItemClickListener() {
             @Override
