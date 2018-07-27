@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chopchop.chupy.R;
-import com.chopchop.chupy.model.Tag;
+import com.chopchop.chupy.models.Tag;
 
 import java.util.List;
 

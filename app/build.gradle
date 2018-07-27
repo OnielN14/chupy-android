@@ -47,4 +47,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit-converters:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    implementation 'me.relex:circleindicator:1.2.2'
 }

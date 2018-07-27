@@ -6,10 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chopchop.chupy.R;
-import com.chopchop.chupy.model.ReadMaterial;
+import com.chopchop.chupy.models.ReadMaterial;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 

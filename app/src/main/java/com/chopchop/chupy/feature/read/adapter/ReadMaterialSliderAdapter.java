@@ -1,7 +1,7 @@
 package com.chopchop.chupy.feature.read.adapter;
 
 import com.chopchop.chupy.R;
-import com.chopchop.chupy.model.ReadMaterial;
+import com.chopchop.chupy.models.ReadMaterial;
 
 import java.util.List;
 

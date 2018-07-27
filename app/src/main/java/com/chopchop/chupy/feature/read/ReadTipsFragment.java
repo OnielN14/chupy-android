@@ -17,7 +17,7 @@ import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialSliderAdapter;
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
 import com.chopchop.chupy.feature.read.utilities.PicassoImageLoadingService;
-import com.chopchop.chupy.model.ReadMaterial;
+import com.chopchop.chupy.models.ReadMaterial;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

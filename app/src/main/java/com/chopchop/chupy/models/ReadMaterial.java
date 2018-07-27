@@ -1,6 +1,5 @@
-package com.chopchop.chupy.model;
+package com.chopchop.chupy.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReadMaterial {
