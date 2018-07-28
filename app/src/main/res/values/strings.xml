@@ -14,4 +14,7 @@
     <string name="loading_text">Loading</string>
     <string name="search_result_page_title">Search Result</string>
     <string name="emergency_emot">&gt;w&lt;</string>
+
+    <string name="write_menu_post_draft">Draft</string>
+    <string name="write_menu_post_new">New</string>
 </resources>
