@@ -21,12 +21,14 @@
         android:padding="8dp">
 
         <TextView
+            android:id="@+id/text_view_slider_item_date"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Sample, Date"/>
 
         <TextView
+            android:id="@+id/text_view_slider_item_title"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

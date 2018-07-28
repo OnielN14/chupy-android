@@ -14,16 +14,14 @@ import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
-import com.chopchop.chupy.feature.read.adapter.ReadMaterialSliderAdapter;
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
-import com.chopchop.chupy.feature.read.utilities.PicassoImageLoadingService;
 import com.chopchop.chupy.models.ReadMaterial;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ss.com.bannerslider.Slider;
+//import ss.com.bannerslider.Slider;
 
 import static com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter.categorizedReadMaterial;
 
@@ -33,8 +31,8 @@ public class ReadArticleFragment extends Fragment {
     private RecyclerView itemsRecyclerView;
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
-    private Slider slider;
-    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
+//    private Slider slider;
+//    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
 
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
     private int readMaterialCategory = 2;
@@ -54,10 +52,10 @@ public class ReadArticleFragment extends Fragment {
         readMaterialRecyclerViewAdapter = new ReadMaterialRecyclerViewAdapter(readMaterialList);
         itemsRecyclerView.setAdapter(readMaterialRecyclerViewAdapter);
 
-        Slider.init(new PicassoImageLoadingService(getActivity()));
-        slider = rootView.findViewById(R.id.slider_top_read_material);
-        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
-        slider.setAdapter(readMaterialSliderAdapter);
+//        Slider.init(new PicassoImageLoadingService(getActivity()));
+//        slider = rootView.findViewById(R.id.slider_top_read_material);
+//        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
+//        slider.setAdapter(readMaterialSliderAdapter);
 
         itemsRecyclerView.addOnItemTouchListener(new ReadMaterialItemClickListener(getContext(), itemsRecyclerView, new OnItemClickListener() {
             @Override

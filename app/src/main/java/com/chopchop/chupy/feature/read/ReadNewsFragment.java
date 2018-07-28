@@ -13,19 +13,18 @@ import android.widget.TextView;
 
 import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.feature.read.adapter.ReadImageSliderAdapter;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
-import com.chopchop.chupy.feature.read.adapter.ReadMaterialSliderAdapter;
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
-import com.chopchop.chupy.feature.read.utilities.PicassoImageLoadingService;
 import com.chopchop.chupy.models.ReadMaterial;
 import com.google.gson.Gson;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ss.com.bannerslider.Slider;
-import ss.com.bannerslider.indicators.CircleIndicator;
+import me.relex.circleindicator.CircleIndicator;
 
 import static com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter.categorizedReadMaterial;
 
@@ -42,6 +41,7 @@ public class ReadNewsFragment extends Fragment {
     private int readMaterialCategory = 1;
 
     private ViewPager viewPagerImageSlider;
+    private ReadImageSliderAdapter imageSliderAdapter;
     private CircleIndicator circleIndicatorImageSlider;
 
     @Override
@@ -61,6 +61,11 @@ public class ReadNewsFragment extends Fragment {
 
         viewPagerImageSlider = rootView.findViewById(R.id.view_pager_read_image_slider);
         circleIndicatorImageSlider = rootView.findViewById(R.id.cicle_indicator_slider);
+
+
+        imageSliderAdapter = new ReadImageSliderAdapter(readMaterialList, getContext());
+        viewPagerImageSlider.setAdapter(imageSliderAdapter);
+        circleIndicatorImageSlider.setViewPager(viewPagerImageSlider);
 
 //        Slider.init(new PicassoImageLoadingService(getActivity()));
 //        slider = rootView.findViewById(R.id.slider_top_read_material);
