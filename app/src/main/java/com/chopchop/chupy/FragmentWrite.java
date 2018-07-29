@@ -35,6 +35,8 @@ public class FragmentWrite extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Post");
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 

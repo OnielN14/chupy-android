@@ -3,6 +3,7 @@ package com.chopchop.chupy.feature.read;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.feature.read.adapter.ClickableViewPager;
+import com.chopchop.chupy.feature.read.adapter.ReadImageSliderAdapter;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
@@ -23,6 +26,8 @@ import java.util.List;
 
 //import ss.com.bannerslider.Slider;
 
+import me.relex.circleindicator.CircleIndicator;
+
 import static com.chopchop.chupy.feature.read.ReadFragmentPagerAdapter.categorizedReadMaterial;
 
 public class ReadTipsFragment extends Fragment {
@@ -31,8 +36,9 @@ public class ReadTipsFragment extends Fragment {
     private RecyclerView itemsRecyclerView;
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
-//    private Slider slider;
-//    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
+    private ClickableViewPager viewPagerImageSlider;
+    private ReadImageSliderAdapter imageSliderAdapter;
+    private CircleIndicator circleIndicatorImageSlider;
 
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
     private int readMaterialCategory = 3;
@@ -52,15 +58,39 @@ public class ReadTipsFragment extends Fragment {
         readMaterialRecyclerViewAdapter = new ReadMaterialRecyclerViewAdapter(readMaterialList);
         itemsRecyclerView.setAdapter(readMaterialRecyclerViewAdapter);
 
-//        Slider.init(new PicassoImageLoadingService(getActivity()));
-//        slider = rootView.findViewById(R.id.slider_top_read_material);
-//        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
-//        slider.setAdapter(readMaterialSliderAdapter);
+        viewPagerImageSlider = (ClickableViewPager) rootView.findViewById(R.id.view_pager_read_image_slider);
+        circleIndicatorImageSlider = rootView.findViewById(R.id.cicle_indicator_slider);
+
+        imageSliderAdapter = new ReadImageSliderAdapter(readMaterialList, getContext());
+        viewPagerImageSlider.setAdapter(imageSliderAdapter);
+        circleIndicatorImageSlider.setViewPager(viewPagerImageSlider);
+
+        viewPagerImageSlider.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClickListener(View v, int position) {
+
+            }
+
+            @Override
+            public void onItemClickListener(int position) {
+                openReadMaterialDetail(readMaterialList.get(position));
+            }
+
+            @Override
+            public void onItemLongClickListener(View v, int position) {
+
+            }
+        });
 
         itemsRecyclerView.addOnItemTouchListener(new ReadMaterialItemClickListener(getContext(), itemsRecyclerView, new OnItemClickListener() {
             @Override
             public void onItemClickListener(View v, int position) {
                 openReadMaterialDetail(readMaterialList.get(position));
+
+            }
+
+            @Override
+            public void onItemClickListener(int position) {
 
             }
 

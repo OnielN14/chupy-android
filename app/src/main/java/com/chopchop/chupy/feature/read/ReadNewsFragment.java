@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.feature.read.adapter.ClickableViewPager;
 import com.chopchop.chupy.feature.read.adapter.ReadImageSliderAdapter;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialItemClickListener;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
@@ -34,13 +35,10 @@ public class ReadNewsFragment extends Fragment {
     private RecyclerView itemsRecyclerView;
     private ReadMaterialRecyclerViewAdapter readMaterialRecyclerViewAdapter;
 
-//    private Slider slider;
-//    private ReadMaterialSliderAdapter readMaterialSliderAdapter;
-
     private List<ReadMaterial> readMaterialList = new ArrayList<>();
     private int readMaterialCategory = 1;
 
-    private ViewPager viewPagerImageSlider;
+    private ClickableViewPager viewPagerImageSlider;
     private ReadImageSliderAdapter imageSliderAdapter;
     private CircleIndicator circleIndicatorImageSlider;
 
@@ -59,18 +57,29 @@ public class ReadNewsFragment extends Fragment {
         readMaterialRecyclerViewAdapter = new ReadMaterialRecyclerViewAdapter(readMaterialList);
         itemsRecyclerView.setAdapter(readMaterialRecyclerViewAdapter);
 
-        viewPagerImageSlider = rootView.findViewById(R.id.view_pager_read_image_slider);
+        viewPagerImageSlider = (ClickableViewPager) rootView.findViewById(R.id.view_pager_read_image_slider);
         circleIndicatorImageSlider = rootView.findViewById(R.id.cicle_indicator_slider);
-
 
         imageSliderAdapter = new ReadImageSliderAdapter(readMaterialList, getContext());
         viewPagerImageSlider.setAdapter(imageSliderAdapter);
         circleIndicatorImageSlider.setViewPager(viewPagerImageSlider);
 
-//        Slider.init(new PicassoImageLoadingService(getActivity()));
-//        slider = rootView.findViewById(R.id.slider_top_read_material);
-//        readMaterialSliderAdapter = new ReadMaterialSliderAdapter(readMaterialList);
-//        slider.setAdapter(readMaterialSliderAdapter);
+        viewPagerImageSlider.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClickListener(View v, int position) {
+
+            }
+
+            @Override
+            public void onItemClickListener(int position) {
+                openReadMaterialDetail(readMaterialList.get(position));
+            }
+
+            @Override
+            public void onItemLongClickListener(View v, int position) {
+
+            }
+        });
 
         itemsRecyclerView.addOnItemTouchListener(new ReadMaterialItemClickListener(getContext(), itemsRecyclerView, new OnItemClickListener() {
             @Override
@@ -81,6 +90,11 @@ public class ReadNewsFragment extends Fragment {
 
             @Override
             public void onItemLongClickListener(View v, int position) {
+
+            }
+
+            @Override
+            public void onItemClickListener(int position) {
 
             }
         }));

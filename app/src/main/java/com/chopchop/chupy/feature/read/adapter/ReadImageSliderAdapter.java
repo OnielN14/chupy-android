@@ -36,10 +36,15 @@ public class ReadImageSliderAdapter extends PagerAdapter {
         TextView sliderTitle = imageSliderPage.findViewById(R.id.text_view_slider_item_title);
 
         sliderDate.setText(readMaterials.get(position).getDate());
-        sliderTitle.setText(readMaterials.get(position).getTitle());
+
+        String tempTitle = readMaterials.get(position).getTitle();
+        if (readMaterials.get(position).getTitle().length() > 40){
+            tempTitle = readMaterials.get(position).getTitle().substring(0,40)+"...";
+        }
+        sliderTitle.setText(tempTitle);
 
         if (readMaterials.get(position).getPhoto() == null){
-            sliderImage.setBackground(container.getResources().getDrawable(R.drawable.chupy_box));
+            sliderImage.setImageResource(R.drawable.chupy_box_colorful);
         }
         else{
             Picasso.get().load(readMaterials.get(position).getPhoto().getHost()+'/'+readMaterials.get(position).getPhoto().getUrl()).into(sliderImage);

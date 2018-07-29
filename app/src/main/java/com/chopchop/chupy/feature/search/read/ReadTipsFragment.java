@@ -53,6 +53,11 @@ public class ReadTipsFragment extends Fragment {
             }
 
             @Override
+            public void onItemClickListener(int position) {
+
+            }
+
+            @Override
             public void onItemLongClickListener(View v, int position) {
 
             }

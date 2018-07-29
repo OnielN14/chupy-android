@@ -18,7 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#b3000000"
-        android:padding="8dp">
+        android:paddingTop="8dp"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="20dp">
 
         <TextView
             android:id="@+id/text_view_slider_item_date"
@@ -33,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Sample Title"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
 
