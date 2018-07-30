@@ -297,6 +297,10 @@ public class FragmentRead extends Fragment {
 
     }
 
+    public static void triggerReadMaterialFetching(){
+        new FragmentRead().fetchReadMaterialAndSetupAdapter();
+    }
+
     private void fetchReadMaterialAndSetupAdapter(){
         controller.fetchReadMaterialCall().enqueue(new Callback<JsonObject>() {
             @Override
@@ -305,8 +309,10 @@ public class FragmentRead extends Fragment {
 
                 tagAdapter = new TagSearchAdapter(tagList);
 
-                viewPager.setAdapter(readFragmentPagerAdapter);
-                loadingArea.setVisibility(View.GONE);
+                if (viewPager != null){
+                    viewPager.setAdapter(readFragmentPagerAdapter);
+                    loadingArea.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -337,7 +343,7 @@ public class FragmentRead extends Fragment {
 
             tempGlobalTagList.addAll(contentTagList);
 
-            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), "24 Juli 2018", tempPhoto, contentTagList));
+            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), item.getAsJsonObject().get("tanggalPost").getAsString(), tempPhoto, contentTagList));
 
         }
 
@@ -357,9 +363,11 @@ public class FragmentRead extends Fragment {
             }
         }
 
+        if(tagRecyclerView != null){
+            tagAdapter = new TagSearchAdapter(tagList);
+            tagRecyclerView.setAdapter(tagAdapter);
+        }
 
-        tagAdapter = new TagSearchAdapter(tagList);
-        tagRecyclerView.setAdapter(tagAdapter);
     }
 
     private List<Tag> parseTagFromContent(JsonElement tag) {

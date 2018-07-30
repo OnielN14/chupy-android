@@ -28,8 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailTokoActivity"></activity>
-        <activity android:name=".feature.read.ReadDetail"></activity>
+        <activity android:name=".DetailTokoActivity" />
+        <activity android:name=".feature.read.ReadDetail" />
+        <activity android:name=".feature.write.NewReadMaterialActivity" />
+        <activity android:name=".feature.write.DraftReadMaterialActivity"></activity>
     </application>
 
 </manifest>

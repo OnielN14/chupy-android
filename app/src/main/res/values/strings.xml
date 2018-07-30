@@ -17,4 +17,19 @@
 
     <string name="write_menu_post_draft">Draft</string>
     <string name="write_menu_post_new">New</string>
+
+    <string name="write_new_page_title">New Post</string>
+    <string name="write_draft_page_title">Your Draft</string>
+
+    <string name="write_new_save">Save</string>
+    <string name="write_new_publish">Publish</string>
+
+    <string name="write_new_title">Title</string>
+    <string name="write_new_category">Category</string>
+    <string name="write_new_content">Content</string>
+    <string name="write_new_tags">Tags</string>
+    <string name="write_new_picture">Thumbnail Picture</string>
+    <string name="write_new_add_picture_button">Add Picture</string>
+
+    <string name="choose_picture">Select Picture</string>
 </resources>

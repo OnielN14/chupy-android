@@ -6,10 +6,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorButtonNormal">@color/colorAccent</item>
     </style>
+
 
     <style name="AppTheme.FullActionBar" parent="AppTheme">
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+        <item name="android:colorControlNormal">@android:color/white</item>
     </style>
 
     <style name="AppTheme.MapArea" parent="AppTheme">

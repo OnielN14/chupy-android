@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:layout_height="match_parent"
+<android.support.design.widget.CoordinatorLayout
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,38 +24,52 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingTop="16dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:id="@+id/relLayout"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:layout_marginTop="?attr/actionBarSize">
 
-        <ImageView
-            android:id="@+id/ic_magnify"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_magnify" />
-
-        <EditText
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/ic_magnify"
-            android:layout_centerVertical="true"
-            android:textSize="16sp"
-            android:textColor="#000"
-            android:id="@+id/input_search"
-            android:hint="@string/read_search_bar"
-            android:imeOptions="actionSearch"
-            android:layout_marginLeft="20dp"
-            android:singleLine="true"/>
+            android:id="@+id/relLayout"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/ic_magnify"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_magnify" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/ic_magnify"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:id="@+id/input_search"
+                android:hint="@string/read_search_bar"
+                android:imeOptions="actionSearch"
+                android:layout_marginLeft="20dp"
+                android:singleLine="true"/>
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_user_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -74,12 +89,4 @@
             android:textSize="16sp"/>
     </LinearLayout>
 
-    <android.support.v4.view.ViewPager
-
-        android:layout_marginTop="?attr/actionBarSize"
-        android:paddingTop="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/view_pager_write">
-    </android.support.v4.view.ViewPager>
 </android.support.design.widget.CoordinatorLayout>
