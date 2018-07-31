@@ -134,7 +134,9 @@ public class LoginFragment extends Fragment {
 
     private void setUserSession(JsonObject userData) {
         chupySharedPrefManager.setSharedPreferencesInt(SharedPrefManager.SP_ID, userData.get("id").getAsInt());
+
         chupySharedPrefManager.setSharedPreferencesString(SharedPrefManager.SP_EMAIL, userData.get("email").getAsString());
+        chupySharedPrefManager.setSharedPreferencesString(SharedPrefManager.SP_PASSWORD, wrapperPasswordLogin.getEditText().getText().toString());
         chupySharedPrefManager.setSharedPreferencesString(SharedPrefManager.SP_NAME, userData.get("name").getAsString());
         chupySharedPrefManager.setSharedPreferencesBoolean(SharedPrefManager.SP_LOGGED_STATUS, true);
     }

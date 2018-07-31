@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.utilities.ChupyService;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +30,9 @@ public class EditProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_CODE = 1;
     private Toolbar mToolbar;
     private CircleImageView imageProfile;
-    private EditText profileEditName;
-    private EditText profileEditEmail;
-    private EditText profileEditPhone;
+    private TextInputLayout profileEditName;
+    private TextInputLayout profileEditEmail;
+    private TextInputLayout profileEditPhone;
     private Button changePhotoButton;
 
     @Override
@@ -37,8 +40,17 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        Bundle bundle =  getIntent().getBundleExtra("userData");
         bindView();
 
+        bindData(bundle);
+    }
+
+    private void bindData(Bundle bundle) {
+        profileEditName.getEditText().setText(bundle.getString("userName"));
+        profileEditEmail.getEditText().setText(bundle.getString("userEmail"));
+        profileEditPhone.getEditText().setText(bundle.getString("userPhone"));
+        Picasso.get().load(ChupyService.baseUrl+"/"+bundle.getString("userPhoto")).into(imageProfile);
     }
 
     private void bindView() {

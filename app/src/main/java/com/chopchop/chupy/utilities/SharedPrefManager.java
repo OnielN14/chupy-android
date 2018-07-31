@@ -8,6 +8,8 @@ public class SharedPrefManager {
     public static final String SP_NAME = "name";
     public static final String SP_ID = "id";
     public static final String SP_EMAIL = "email";
+    public static final String SP_PASSWORD = "password";
+
     public static final String SP_LOGGED_STATUS = "spLoggedStatus";
 
     SharedPreferences sharedPreferences;
@@ -39,6 +41,10 @@ public class SharedPrefManager {
 
     public String getSharedEmail(){
         return sharedPreferences.getString(SP_EMAIL,"");
+    }
+
+    public String getSharedPassword(){
+        return sharedPreferences.getString(SP_PASSWORD,"");
     }
 
     public int getSharedId(){
