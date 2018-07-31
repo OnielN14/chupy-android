@@ -1,5 +1,17 @@
 <resources>
     <string name="app_name">Chupy</string>
+
+    <string-array name="login_tab_menu">
+        <item>Login</item>
+        <item>Register</item>
+    </string-array>
+
+    <string-array name="gender">
+        <item>Choose Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
     <string name="read_search_bar">Search articles, news, or tips &amp; trick</string>
     <string-array name="read_tab_menu">
         <item>News</item>
@@ -32,4 +44,41 @@
     <string name="write_new_add_picture_button">Add Picture</string>
 
     <string name="choose_picture">Select Picture</string>
+
+    <string name="profile_menu_edit">Edit Profile</string>
+    <string name="profile_menu_change_password">Change Password</string>
+    <string name="profile_menu_about">About</string>
+    <string name="profile_menu_logout">Logout</string>
+
+    <string name="profile_edit_page_title">Edit Profile</string>
+    <string name="profile_edit_nama">Name</string>
+    <string name="profile_edit_email">Email Address</string>
+    <string name="profile_edit_phone">Phone Number</string>
+    <string name="profile_edit_change_photo">Change Photo</string>
+
+    <string name="profile_change_password_page_title">Change Password</string>
+    <string name="profile_change_password_old_password">Old Password</string>
+    <string name="profile_change_password_new_password">New Password</string>
+    <string name="profile_change_password_confirm_password">Confirm New Password</string>
+    <string name="profile_change_password_button">Change Password</string>
+
+    <string name="profile_change_password_error_no_same">Password must same</string>
+
+    <string name="login_error_message_empty_email">Please enter your email</string>
+    <string name="login_error_message_empty_password">Please enter your password</string>
+
+    <string name="login_error_message_wrong_email">Your email or password is wrong</string>
+    <string name="login_error_message_wrong_password">Your email or password is wrong</string>
+
+
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_login_button">Login</string>
+    <string name="register_name">Name</string>
+    <string name="register_gender">Gender</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_button_register">Register</string>
+    <string name="register_create_account_title">Create Account</string>
+    <string name="register_already_have_an_account_title">Already have an account?</string>
+    <string name="login_forgot_password">Forgot Password?</string>
 </resources>

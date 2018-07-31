@@ -20,4 +20,5 @@
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
+
 </resources>

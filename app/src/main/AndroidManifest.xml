@@ -22,16 +22,25 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".MainActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".DetailTokoActivity" />
+        <activity android:name=".feature.read.ReadDetail" />
+        <activity android:name=".feature.write.NewReadMaterialActivity" />
+        <activity android:name=".feature.write.DraftReadMaterialActivity" />
+        <activity android:name=".feature.profile.EditProfileActivity" />
+        <activity android:name=".feature.profile.ChangePasswordActivity" />
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailTokoActivity" />
-        <activity android:name=".feature.read.ReadDetail" />
-        <activity android:name=".feature.write.NewReadMaterialActivity" />
-        <activity android:name=".feature.write.DraftReadMaterialActivity"></activity>
     </application>
 
 </manifest>
