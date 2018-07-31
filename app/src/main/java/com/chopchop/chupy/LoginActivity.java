@@ -34,6 +34,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public ViewPager getLoginPageViewPager() {
+        return loginPageViewPager;
+    }
+
     private void bindView() {
         mToolbar = findViewById(R.id.toolbar_login);
         setSupportActionBar(mToolbar);

@@ -62,7 +62,7 @@
     <string name="profile_change_password_confirm_password">Confirm New Password</string>
     <string name="profile_change_password_button">Change Password</string>
 
-    <string name="profile_change_password_error_no_same">Password must same</string>
+    <string name="profile_change_password_error_no_same">Password must be same</string>
 
     <string name="login_error_message_empty_email">Please enter your email</string>
     <string name="login_error_message_empty_password">Please enter your password</string>
@@ -80,5 +80,11 @@
     <string name="register_button_register">Register</string>
     <string name="register_create_account_title">Create Account</string>
     <string name="register_already_have_an_account_title">Already have an account?</string>
+
+    <string name="register_error_message_empty_name">Please enter your name</string>
+    <string name="register_error_message_no_selected_gender">Please choose your gender</string>
+
     <string name="login_forgot_password">Forgot Password?</string>
+
+    <string name="registration_success">Registration Success</string>
 </resources>

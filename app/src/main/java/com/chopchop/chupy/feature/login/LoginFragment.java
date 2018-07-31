@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +34,21 @@ public class LoginFragment extends Fragment {
 
     private LoginRegisterController serviceController = new LoginRegisterController();
 
+    private RelativeLayout loadingArea;
+
     private SharedPrefManager chupySharedPrefManager;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
+    public static LoginFragment newInstance(){
+        return new LoginFragment();
+    }
+
+//    public void registrationSuccess(String email){
+//        ((TextInputLayout) getActivity().findViewById(R.id.wrapper_edit_text_login_email)).getEditText().setText(email);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +65,10 @@ public class LoginFragment extends Fragment {
     }
 
     private void bindView(ViewGroup rootView) {
+
+        loadingArea = rootView.findViewById(R.id.relative_layout_loading_area);
+        loadingArea.setVisibility(View.GONE);
+
         wrapperEmailLogin = rootView.findViewById(R.id.wrapper_edit_text_login_email);
         wrapperPasswordLogin = rootView.findViewById(R.id.wrapper_edit_text_login_password);
         forgotPasswordTextView = rootView.findViewById(R.id.text_view_forgot_password);
@@ -82,6 +96,7 @@ public class LoginFragment extends Fragment {
             wrapperEmailLogin.setErrorEnabled(false);
             wrapperPasswordLogin.setErrorEnabled(false);
 
+            loadingArea.setVisibility(View.VISIBLE);
             serviceController.attempLogin(wrapperEmailLogin.getEditText().getText().toString(), wrapperPasswordLogin.getEditText().getText().toString()).enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
@@ -93,6 +108,7 @@ public class LoginFragment extends Fragment {
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
                     t.printStackTrace();
+                    loadingArea.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Something is wrong", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -124,6 +140,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginFailed() {
+        loadingArea.setVisibility(View.GONE);
         wrapperEmailLogin.setError(getString(R.string.login_error_message_wrong_email));wrapperPasswordLogin.setError(getString(R.string.login_error_message_wrong_password));
         wrapperEmailLogin.setErrorEnabled(true);
         wrapperPasswordLogin.setErrorEnabled(true);
