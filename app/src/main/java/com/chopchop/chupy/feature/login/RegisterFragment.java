@@ -156,7 +156,7 @@ public class RegisterFragment extends Fragment {
                 public void onFailure(Call<JsonObject> call, Throwable t) {
                     t.printStackTrace();
                     loadingArea.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "Something is wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Something is wrong"+t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }

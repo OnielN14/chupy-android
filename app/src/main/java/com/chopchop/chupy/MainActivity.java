@@ -1,11 +1,16 @@
 package com.chopchop.chupy;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -14,12 +19,15 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "Request";
     private BottomNavigationViewEx navbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getReadStoragePermission();
 
         navbar = (BottomNavigationViewEx) findViewById(R.id.navigation);
         navbar.enableAnimation(false);
@@ -38,6 +46,25 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_content, new FragmentPetService()).commit();
         }
+    }
+
+    private void getReadStoragePermission() {
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+
+
+        Log.d(TAG, "getReadStoragePermission: getting read storage permissions");
+        String permissions = Manifest.permission.READ_EXTERNAL_STORAGE;
+
+        if(ContextCompat.checkSelfPermission(this, permissions) == PackageManager.PERMISSION_GRANTED){
+
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permissions},permissionCheck);
+        }
+
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener botnav = new BottomNavigationView.OnNavigationItemSelectedListener() {

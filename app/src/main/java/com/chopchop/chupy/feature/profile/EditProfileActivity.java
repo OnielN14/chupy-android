@@ -1,33 +1,50 @@
 package com.chopchop.chupy.feature.profile;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.utilities.ChupyService;
+import com.chopchop.chupy.utilities.ChupyServiceController;
+import com.chopchop.chupy.utilities.SharedPrefManager;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_CODE = 1;
+    private static final String TAG = "EditProfile";
     private Toolbar mToolbar;
     private CircleImageView imageProfile;
     private TextInputLayout profileEditName;
@@ -35,13 +52,23 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputLayout profileEditPhone;
     private Button changePhotoButton;
 
+    private RelativeLayout loadingArea;
+
+    private File newImageProfile;
+
+    private ChupyServiceController serviceController = new ChupyServiceController();
+    private SharedPrefManager chupySharedManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        chupySharedManager = new SharedPrefManager(this);
+
         Bundle bundle =  getIntent().getBundleExtra("userData");
         bindView();
+
 
         bindData(bundle);
     }
@@ -54,6 +81,10 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void bindView() {
+
+        loadingArea = findViewById(R.id.relative_layout_loading_area);
+        loadingArea.setVisibility(View.GONE);
+
         mToolbar = findViewById(R.id.toolbar_profile);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -91,6 +122,21 @@ public class EditProfileActivity extends AppCompatActivity {
                 imageProfile.setImageBitmap(bitmap);
                 imageProfile.setVisibility(View.VISIBLE);
 
+                String wholeID = DocumentsContract.getDocumentId(uri);
+                String id = wholeID.split(":")[1];
+                String[] column = {MediaStore.Images.Media.DATA};
+                String sel = MediaStore.Images.Media._ID + "=?";
+                Cursor cursor = EditProfileActivity.this.getContentResolver().
+                        query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                column, sel, new String[]{id}, null);
+                String filePath = "";
+                int columnIndex = cursor.getColumnIndex(column[0]);
+                if (cursor.moveToFirst()) {
+                    filePath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+
+                newImageProfile = new File(filePath);
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -115,9 +161,55 @@ public class EditProfileActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.profile_save_change:
                 Toast.makeText(this, "Saving... lol", Toast.LENGTH_SHORT).show();
+                saveProfileChanges();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveProfileChanges() {
+
+        loadingArea.setVisibility(View.VISIBLE);
+
+        RequestBody reqFile;
+        MultipartBody.Part imagePart;
+        if (newImageProfile != null){
+            reqFile = RequestBody.create(MediaType.parse("image/*"), newImageProfile);
+            imagePart = MultipartBody.Part.createFormData("foto", newImageProfile.getName(), reqFile);
+        }
+        else{
+            reqFile = null;
+            imagePart = MultipartBody.Part.createFormData("foto", null);
+        }
+
+
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), profileEditName.getEditText().getText().toString());
+        RequestBody email = RequestBody.create(MediaType.parse("text/plain"), profileEditEmail.getEditText().getText().toString());
+        RequestBody phone = RequestBody.create(MediaType.parse("text/plain"), profileEditPhone.getEditText().getText().toString());
+
+        serviceController.getService().postEdit(chupySharedManager.getSharedId(), name, email, phone, imagePart).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                parseResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(EditProfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void parseResponse(JsonObject body) {
+        Log.d(TAG, "parseResponse: "+ body);
+        if (body != null){
+            JsonObject data = body.getAsJsonObject("data");
+            finish();
+        }
+        else{
+            Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 }

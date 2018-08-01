@@ -87,10 +87,21 @@ public class FragmentProfile extends Fragment {
     private void preparedUserData(JsonObject userData) {
         userName = userData.get("name").getAsString();
         userEmail = userData.get("email").getAsString();
-        userPhone = userData.get("notelepon").getAsString();
-        userPhoto = userData.get("foto").getAsString();
 
-        Picasso.get().load(ChupyService.baseUrl+"/"+userPhoto).into(profileImage);
+        if (!userData.get("notelepon").isJsonNull()) {
+            userPhone = userData.get("notelepon").getAsString();
+        }
+        else{
+            userPhone = "";
+        }
+
+        if (!userData.get("foto").isJsonNull()){
+            userPhoto = userData.get("foto").getAsString();
+            Picasso.get().load(ChupyService.baseUrl+"/"+userPhoto).into(profileImage);
+        }
+        else{
+            userPhoto = null;
+        }
     }
 
 
