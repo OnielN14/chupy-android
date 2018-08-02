@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getReadStoragePermission();
+//        getReadStoragePermission();
 
         navbar = (BottomNavigationViewEx) findViewById(R.id.navigation);
         navbar.enableAnimation(false);
@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{permissions},permissionCheck);
         }
-
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener botnav = new BottomNavigationView.OnNavigationItemSelectedListener() {

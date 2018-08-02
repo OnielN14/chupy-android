@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/toolbar_profile"
             app:titleTextColor="@android:color/white"
+            app:subtitleTextColor="@android:color/white"
             android:theme="@style/AppTheme.FullActionBar"
             >
         </android.support.v7.widget.Toolbar>
@@ -62,6 +63,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/profile_edit_nama"
+                    android:singleLine="true"
+                    android:inputType="textCapWords"
                     />
 
             </android.support.design.widget.TextInputLayout>

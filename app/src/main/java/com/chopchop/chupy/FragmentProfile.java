@@ -1,8 +1,6 @@
 package com.chopchop.chupy;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +18,6 @@ import com.chopchop.chupy.utilities.ChupyServiceController;
 import com.chopchop.chupy.utilities.SharedPrefManager;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -37,6 +34,7 @@ public class FragmentProfile extends Fragment {
     private TextView profileChangePassword;
     private TextView about;
     private TextView profileLogout;
+    private TextView profileFullName;
 
     private SharedPrefManager chupySharedPrefManager;
     private ChupyServiceController serviceController = new ChupyServiceController();
@@ -51,6 +49,13 @@ public class FragmentProfile extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        retrievingUserData();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -60,8 +65,6 @@ public class FragmentProfile extends Fragment {
 
         bindView(rootView);
         retrievingUserData();
-
-
 
         return rootView;
     }
@@ -74,7 +77,6 @@ public class FragmentProfile extends Fragment {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.d(TAG, "onResponse: "+response.body());
                 preparedUserData(response.body().getAsJsonObject("body"));
-                Toast.makeText(getActivity(), "Data Retrievied", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -86,6 +88,7 @@ public class FragmentProfile extends Fragment {
 
     private void preparedUserData(JsonObject userData) {
         userName = userData.get("name").getAsString();
+        profileFullName.setText(userName);
         userEmail = userData.get("email").getAsString();
 
         if (!userData.get("notelepon").isJsonNull()) {
@@ -107,12 +110,11 @@ public class FragmentProfile extends Fragment {
 
     private void bindView(final ViewGroup rootView) {
         profileImage = rootView.findViewById(R.id.circle_image_profile);
-
+        profileFullName = rootView.findViewById(R.id.text_view_user_name);
         profileEditProfile = rootView.findViewById(R.id.text_view_edit_profile);
         profileEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "->"+userEmail, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), EditProfileActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("userName", userName);

@@ -38,6 +38,10 @@ public interface ChupyService{
     @POST("api/register")
     Call<JsonObject> postRegister(@Field("name") String name, @Field("email") String email, @Field("jeniskelamin") String gender, @Field("password") String password, @Field("idHakakses") int idHakakses);
 
+    @FormUrlEncoded
+    @POST("api/change-password/{userId}")
+    Call<JsonObject> postChangePassword(@Path("userId") int userId, @Field("oldpassword") String oldPassword, @Field("newpassword") String newPassword);
+
     @Multipart
     @POST("api/edit-profil/{userId}")
     Call<JsonObject> postEdit(@Path("userId") int userId, @Part("name") RequestBody name, @Part("email") RequestBody email, @Part("notelepon") RequestBody noTelepon, @Part MultipartBody.Part file);

@@ -152,17 +152,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_petservice, container, false);
-        mSearchText = (AutoCompleteTextView) view.findViewById(R.id.input_search);
-        imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
-        mGps = (ImageView) view.findViewById(R.id.ic_gps);
 
-        imgSearchIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                geoLocate();
-                hideSoftKeyboard();
-            }
-        });
+        bindView(view);
 
 
         coba = new CobaJson();
@@ -174,6 +165,33 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
     }
 
+    private void bindView(View view) {
+        mSearchText = (AutoCompleteTextView) view.findViewById(R.id.input_search);
+        imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
+        mGps = (ImageView) view.findViewById(R.id.ic_gps);
+
+        imgSearchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                geoLocate();
+                hideSoftKeyboard();
+            }
+        });
+    }
+
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//        bindView(getLayoutInflater().inflate(R.layout.fragment_petservice, null, false));
+//
+//        if (!mLocationPermissionsGranted){
+//            getLocationPermission();
+//        }
+//
+//        init();
+//
+//    }
 
     private void getMarker(){
         Log.d("marker","zzzz");

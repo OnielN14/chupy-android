@@ -1,6 +1,7 @@
 package com.chopchop.chupy.feature.login;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,6 +114,8 @@ public class RegisterFragment extends Fragment {
     }
 
     private void doRegister() {
+        hideSoftKeyboard();
+
         if (isFormEmpty(wrapperNameRegister.getEditText()) || isFormEmpty(wrapperEmailRegister.getEditText()) || isFormEmpty(wrapperPasswordRegister.getEditText()) || isFormEmpty(wrapperPasswordConfirmRegister.getEditText()) || !isGenderSelected() || !isPasswordSame(wrapperPasswordRegister.getEditText().getText().toString(), wrapperPasswordConfirmRegister.getEditText().getText().toString())){
             Toast.makeText(getActivity(), "Ada yang kosong", Toast.LENGTH_SHORT).show();
 
@@ -206,4 +210,9 @@ public class RegisterFragment extends Fragment {
         return editText.getText().length() == 0 || editText.getText() == null;
     }
 
+    private void hideSoftKeyboard(){
+        final InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
 }

@@ -41,15 +41,15 @@ public class FragmentWrite extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragmenpt
 
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_write, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.emergency_page, container, false);
 
-        mToolbar = rootView.findViewById(R.id.toolbar_write);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Post");
+//        mToolbar = rootView.findViewById(R.id.toolbar_write);
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Post");
 
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
 
-        fetchTag();
+//        fetchTag();
 
         return rootView;
     }

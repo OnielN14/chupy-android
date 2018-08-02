@@ -1,6 +1,8 @@
 package com.chopchop.chupy.feature.profile;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -8,6 +10,8 @@ import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -63,7 +67,7 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
+        getReadStoragePermission();
         chupySharedManager = new SharedPrefManager(this);
 
         Bundle bundle =  getIntent().getBundleExtra("userData");
@@ -160,8 +164,21 @@ public class EditProfileActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.profile_save_change:
-                Toast.makeText(this, "Saving... lol", Toast.LENGTH_SHORT).show();
-                saveProfileChanges();
+                Toast.makeText(this, getString(R.string.process_message_saving), Toast.LENGTH_SHORT).show();
+                if (isFormEmpty(profileEditEmail.getEditText())) {
+                    profileEditEmail.setError(getString(R.string.login_error_message_empty_email));
+                }
+                else if (isFormEmpty(profileEditName.getEditText())) {
+                    profileEditName.setError(getString(R.string.profile_edit_message_error_name_empty));
+                }
+                else if (isFormEmpty(profileEditName.getEditText())) {
+                    profileEditName.setError(getString(R.string.profile_edit_message_error_phone_empty));
+                }
+                else{
+                    profileEditEmail.setErrorEnabled(false);
+                    saveProfileChanges();
+                }
+
                 break;
         }
 
@@ -180,7 +197,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
         else{
             reqFile = null;
-            imagePart = MultipartBody.Part.createFormData("foto", null);
+            imagePart = MultipartBody.Part.createFormData("none", "none");
         }
 
 
@@ -209,7 +226,29 @@ public class EditProfileActivity extends AppCompatActivity {
             finish();
         }
         else{
-            Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.process_message_error_undefined), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private boolean isFormEmpty(EditText editText) {
+        return editText.getText().length() == 0 || editText.getText() == null;
+    }
+
+    private void getReadStoragePermission() {
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+
+
+        Log.d(TAG, "getReadStoragePermission: getting read storage permissions");
+        String permissions = Manifest.permission.READ_EXTERNAL_STORAGE;
+
+        if(ContextCompat.checkSelfPermission(this, permissions) == PackageManager.PERMISSION_GRANTED){
+
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permissions},permissionCheck);
         }
     }
 }

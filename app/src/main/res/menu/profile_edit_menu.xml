@@ -6,7 +6,6 @@
         android:title="Save Change"
         android:icon="@drawable/ic_done_black_24dp"
         android:iconTint="@color/colorAccent"
-        android:iconTintMode="add"
         app:showAsAction="ifRoom"
         />
 </menu>

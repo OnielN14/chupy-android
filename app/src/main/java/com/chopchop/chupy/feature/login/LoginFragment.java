@@ -1,5 +1,6 @@
 package com.chopchop.chupy.feature.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -8,12 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chopchop.chupy.ForgotPasswordActivity;
 import com.chopchop.chupy.MainActivity;
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.feature.login.utilities.LoginRegisterController;
@@ -46,9 +49,6 @@ public class LoginFragment extends Fragment {
         return new LoginFragment();
     }
 
-//    public void registrationSuccess(String email){
-//        ((TextInputLayout) getActivity().findViewById(R.id.wrapper_edit_text_login_email)).getEditText().setText(email);
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +72,13 @@ public class LoginFragment extends Fragment {
         wrapperEmailLogin = rootView.findViewById(R.id.wrapper_edit_text_login_email);
         wrapperPasswordLogin = rootView.findViewById(R.id.wrapper_edit_text_login_password);
         forgotPasswordTextView = rootView.findViewById(R.id.text_view_forgot_password);
+        forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
+            }
+        });
+
         loginButton = rootView.findViewById(R.id.button_login);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +89,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void doLogin(){
+        hideSoftKeyboard();
         if (isFormEmpty(wrapperEmailLogin.getEditText()) && isFormEmpty(wrapperPasswordLogin.getEditText())){
             if (isFormEmpty(wrapperEmailLogin.getEditText())){
                 wrapperEmailLogin.setError(getString(R.string.login_error_message_empty_email));
@@ -100,9 +108,24 @@ public class LoginFragment extends Fragment {
             serviceController.attempLogin(wrapperEmailLogin.getEditText().getText().toString(), wrapperPasswordLogin.getEditText().getText().toString()).enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-                    Log.d(TAG, "onResponse: login = "+response.body());
-                    proceedLogin(response.body());
-                    Toast.makeText(getActivity(), "Loggin in ...", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onResponse: login = "+response);
+
+                    switch (response.code()){
+                        case 200:
+                            proceedLogin(response.body());
+                            break;
+                        case 401:
+                            loginFailed();
+                            break;
+                        case 400:
+                            loginFailed();
+                            Toast.makeText(getActivity(), getString(R.string.login_error_message_email_not_registered), Toast.LENGTH_SHORT).show();
+                            break;
+                        case 500:
+                            loadingArea.setVisibility(View.GONE);
+                            Toast.makeText(getActivity(), "Something is wrong", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
                 @Override
@@ -116,15 +139,9 @@ public class LoginFragment extends Fragment {
     }
 
     private void proceedLogin(JsonObject body) {
-        if (body != null){
-            setUserSession(body.getAsJsonObject("body"));
-//            Log.d(TAG, "proceedLogin: " + body.getAsJsonObject("body"));
-            openMainActivity();
-        }
-        else{
-            Toast.makeText(getActivity(), "Login Failed", Toast.LENGTH_SHORT).show();
-            loginFailed();
-        }
+        setUserSession(body.getAsJsonObject("body"));
+        Toast.makeText(getActivity(), "Loggin in ...", Toast.LENGTH_SHORT).show();
+        openMainActivity();
     }
 
     private void openMainActivity() {
@@ -152,4 +169,9 @@ public class LoginFragment extends Fragment {
         return editText.getText().length() == 0 || editText.getText() == null;
     }
 
+    private void hideSoftKeyboard(){
+        final InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
 }

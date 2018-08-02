@@ -57,6 +57,9 @@
     <string name="profile_edit_phone">Phone Number</string>
     <string name="profile_edit_change_photo">Change Photo</string>
 
+    <string name="profile_edit_message_error_name_empty">Please enter your name</string>
+    <string name="profile_edit_message_error_phone_empty">Please enter your phone number</string>
+
     <string name="profile_change_password_page_title">Change Password</string>
     <string name="profile_change_password_old_password">Old Password</string>
     <string name="profile_change_password_new_password">New Password</string>
@@ -64,12 +67,16 @@
     <string name="profile_change_password_button">Change Password</string>
 
     <string name="profile_change_password_error_no_same">Password must be same</string>
+    <string name="profile_change_password_error_wrong_password">Password wrong</string>
+    <string name="profile_change_password_message_success">Your password has changed</string>
 
     <string name="login_error_message_empty_email">Please enter your email</string>
     <string name="login_error_message_empty_password">Please enter your password</string>
 
     <string name="login_error_message_wrong_email">Your email or password is wrong</string>
     <string name="login_error_message_wrong_password">Your email or password is wrong</string>
+
+    <string name="login_error_message_email_not_registered">Email is not registered</string>
 
 
     <string name="login_email">Email</string>
@@ -88,4 +95,17 @@
     <string name="login_forgot_password">Forgot Password?</string>
 
     <string name="registration_success">Registration Success</string>
+
+    <string name="process_message_saving">Saving</string>
+    <string name="process_message_sending">Sending</string>
+    <string name="process_message_logging">Logging</string>
+    <string name="process_message_error_undefined">Something Wrong</string>
+
+
+    <string name="forgot_password_page_title">Forgot Password</string>
+    <string name="forgot_password_title">Losing Password ?</string>
+    <string name="forgot_password_paragraph">Enter your email below. We will send you an email to reset your password</string>
+    <string name="forgot_password_request_button">Send Request</string>
+    <string name="development_message">Sorry, we are still on development</string>
+
 </resources>
