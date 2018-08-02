@@ -1,4 +1,4 @@
-package com.chopchop.chupy.models;
+package com.chopchop.chupy.feature.petservice.models;
 
 import android.net.Uri;
 
@@ -8,7 +8,7 @@ public class PlaceInfo {
 
     private String image;
     private String title;
-    private String include;
+    private String deskripsi;
     private String address;
 
     public String getImage() {
@@ -27,12 +27,12 @@ public class PlaceInfo {
         this.title = title;
     }
 
-    public String getInclude() {
-        return include;
+    public String getDeskripsi() {
+        return deskripsi;
     }
 
-    public void setInclude(String include) {
-        this.include = include;
+    public void setDeskripsi(String deskripsi) {
+        this.deskripsi = deskripsi;
     }
 
     public String getAddress() {

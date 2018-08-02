@@ -55,6 +55,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".feature.petservice.DetailTokoActivity"></activity>
+        <activity android:name=".feature.read.ReadDetail"></activity>
         <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 

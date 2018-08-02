@@ -1,4 +1,4 @@
-package com.chopchop.chupy.models;
+package com.chopchop.chupy.feature.petservice.models;
 
 public class InfoWindowData {
     private String mLabel;

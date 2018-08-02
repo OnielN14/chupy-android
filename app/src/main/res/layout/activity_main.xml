@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:menu="@menu/navigation"
-        android:background="?android:attr/windowBackground">
+        android:elevation="5dp"
+        android:background="@drawable/shadow">
 
     </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
 
