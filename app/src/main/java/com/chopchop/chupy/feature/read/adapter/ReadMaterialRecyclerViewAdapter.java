@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chopchop.chupy.R;
-import com.chopchop.chupy.model.ReadMaterial;
+import com.chopchop.chupy.models.ReadMaterial;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

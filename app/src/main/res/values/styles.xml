@@ -6,14 +6,25 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorButtonNormal">@color/colorAccent</item>
     </style>
+
 
     <style name="AppTheme.FullActionBar" parent="AppTheme">
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+        <item name="android:colorControlNormal">@android:color/white</item>
     </style>
 
     <style name="AppTheme.MapArea" parent="AppTheme">
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.FullScreen" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 </resources>

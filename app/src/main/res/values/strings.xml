@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">Chupy</string>
+    <string name="app_version">v1.0</string>
+
+    <string-array name="login_tab_menu">
+        <item>Login</item>
+        <item>Register</item>
+    </string-array>
+
+    <string-array name="gender">
+        <item>Choose Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
     <string name="read_search_bar">Search articles, news, or tips &amp; trick</string>
     <string-array name="read_tab_menu">
         <item>News</item>
@@ -14,4 +27,85 @@
     <string name="loading_text">Loading</string>
     <string name="search_result_page_title">Search Result</string>
     <string name="emergency_emot">&gt;w&lt;</string>
+
+    <string name="write_menu_post_draft">Draft</string>
+    <string name="write_menu_post_new">New</string>
+
+    <string name="write_new_page_title">New Post</string>
+    <string name="write_draft_page_title">Your Draft</string>
+
+    <string name="write_new_save">Save</string>
+    <string name="write_new_publish">Publish</string>
+
+    <string name="write_new_title">Title</string>
+    <string name="write_new_category">Category</string>
+    <string name="write_new_content">Content</string>
+    <string name="write_new_tags">Tags</string>
+    <string name="write_new_picture">Thumbnail Picture</string>
+    <string name="write_new_add_picture_button">Add Picture</string>
+
+    <string name="choose_picture">Select Picture</string>
+
+    <string name="profile_menu_edit">Edit Profile</string>
+    <string name="profile_menu_change_password">Change Password</string>
+    <string name="profile_menu_about">About</string>
+    <string name="profile_menu_logout">Logout</string>
+
+    <string name="profile_edit_page_title">Edit Profile</string>
+    <string name="profile_edit_nama">Name</string>
+    <string name="profile_edit_email">Email Address</string>
+    <string name="profile_edit_phone">Phone Number</string>
+    <string name="profile_edit_change_photo">Change Photo</string>
+
+    <string name="profile_edit_message_error_name_empty">Please enter your name</string>
+    <string name="profile_edit_message_error_phone_empty">Please enter your phone number</string>
+
+    <string name="profile_change_password_page_title">Change Password</string>
+    <string name="profile_change_password_old_password">Old Password</string>
+    <string name="profile_change_password_new_password">New Password</string>
+    <string name="profile_change_password_confirm_password">Confirm New Password</string>
+    <string name="profile_change_password_button">Change Password</string>
+
+    <string name="profile_change_password_error_no_same">Password must be same</string>
+    <string name="profile_change_password_error_wrong_password">Password wrong</string>
+    <string name="profile_change_password_message_success">Your password has changed</string>
+
+    <string name="login_error_message_empty_email">Please enter your email</string>
+    <string name="login_error_message_empty_password">Please enter your password</string>
+
+    <string name="login_error_message_wrong_email">Your email or password is wrong</string>
+    <string name="login_error_message_wrong_password">Your email or password is wrong</string>
+
+    <string name="login_error_message_email_not_registered">Email is not registered</string>
+
+
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_login_button">Login</string>
+    <string name="register_name">Name</string>
+    <string name="register_gender">Gender</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_button_register">Register</string>
+    <string name="register_create_account_title">Create Account</string>
+    <string name="register_already_have_an_account_title">Already have an account?</string>
+
+    <string name="register_error_message_empty_name">Please enter your name</string>
+    <string name="register_error_message_no_selected_gender">Please choose your gender</string>
+
+    <string name="login_forgot_password">Forgot Password?</string>
+
+    <string name="registration_success">Registration Success</string>
+
+    <string name="process_message_saving">Saving</string>
+    <string name="process_message_sending">Sending</string>
+    <string name="process_message_logging">Logging</string>
+    <string name="process_message_error_undefined">Something Wrong</string>
+
+
+    <string name="forgot_password_page_title">Forgot Password</string>
+    <string name="forgot_password_title">Losing Password ?</string>
+    <string name="forgot_password_paragraph">Enter your email below. We will send you an email to reset your password</string>
+    <string name="forgot_password_request_button">Send Request</string>
+    <string name="development_message">Sorry, we are still on development</string>
+
 </resources>

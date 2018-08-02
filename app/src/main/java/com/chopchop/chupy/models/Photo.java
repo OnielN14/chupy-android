@@ -1,4 +1,4 @@
-package com.chopchop.chupy.model;
+package com.chopchop.chupy.models;
 
 public class Photo {
     private int id;

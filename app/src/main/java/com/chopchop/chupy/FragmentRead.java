@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +29,9 @@ import com.chopchop.chupy.feature.read.adapter.TagSearchAdapter;
 import com.chopchop.chupy.feature.read.utilities.OnItemClickListener;
 import com.chopchop.chupy.feature.read.utilities.ReadMaterialController;
 import com.chopchop.chupy.feature.search.read.SearchReadFragmentPagerAdapter;
-import com.chopchop.chupy.model.Photo;
-import com.chopchop.chupy.model.ReadMaterial;
-import com.chopchop.chupy.model.Tag;
+import com.chopchop.chupy.models.Photo;
+import com.chopchop.chupy.models.ReadMaterial;
+import com.chopchop.chupy.models.Tag;
 import com.chopchop.chupy.utilities.ChupyService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -46,6 +47,8 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -149,6 +152,11 @@ public class FragmentRead extends Fragment {
                 }
 
                 textHolder.setPadding(l,t,r,b);
+            }
+
+            @Override
+            public void onItemClickListener(int position) {
+
             }
 
             @Override
@@ -289,6 +297,10 @@ public class FragmentRead extends Fragment {
 
     }
 
+    public static void triggerReadMaterialFetching(){
+        new FragmentRead().fetchReadMaterialAndSetupAdapter();
+    }
+
     private void fetchReadMaterialAndSetupAdapter(){
         controller.fetchReadMaterialCall().enqueue(new Callback<JsonObject>() {
             @Override
@@ -297,13 +309,16 @@ public class FragmentRead extends Fragment {
 
                 tagAdapter = new TagSearchAdapter(tagList);
 
-                viewPager.setAdapter(readFragmentPagerAdapter);
-                loadingArea.setVisibility(View.GONE);
+                if (viewPager != null){
+                    viewPager.setAdapter(readFragmentPagerAdapter);
+                    loadingArea.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                Toast.makeText(getContext(), "Something wrong happens", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: Something wrong "+t, t);
             }
         });
     }
@@ -328,7 +343,7 @@ public class FragmentRead extends Fragment {
 
             tempGlobalTagList.addAll(contentTagList);
 
-            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), "24 Juli 2018", tempPhoto, contentTagList));
+            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), item.getAsJsonObject().get("tanggalPost").getAsString(), tempPhoto, contentTagList));
 
         }
 
@@ -348,9 +363,11 @@ public class FragmentRead extends Fragment {
             }
         }
 
+        if(tagRecyclerView != null){
+            tagAdapter = new TagSearchAdapter(tagList);
+            tagRecyclerView.setAdapter(tagAdapter);
+        }
 
-        tagAdapter = new TagSearchAdapter(tagList);
-        tagRecyclerView.setAdapter(tagAdapter);
     }
 
     private List<Tag> parseTagFromContent(JsonElement tag) {
