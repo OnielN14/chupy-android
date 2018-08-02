@@ -1,4 +1,4 @@
-package com.chopchop.chupy.models;
+package com.chopchop.chupy.feature.petservice.models;
 
 
 import com.chopchop.chupy.Coba;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class CobaJson{
+public class PetServiceJson {
 
     @SerializedName("id")
     @Expose
@@ -24,9 +24,6 @@ public class CobaJson{
     @SerializedName("foto")
     @Expose
     private String foto;
-    @SerializedName("urlfoto")
-    @Expose
-    private String urlfoto;
     @SerializedName("pemilik")
     @Expose
     private String pemilik;
@@ -42,6 +39,13 @@ public class CobaJson{
     @SerializedName("latitude")
     @Expose
     private Double latitude;
+
+    @SerializedName("notelepon")
+    @Expose
+    private String notelepon;
+    @SerializedName("statusToko")
+    @Expose
+    private String statusToko;
 
     public Integer getId() {
         return id;
@@ -83,14 +87,6 @@ public class CobaJson{
         this.foto = foto;
     }
 
-    public String getUrlfoto() {
-        return urlfoto;
-    }
-
-    public void setUrlfoto(String urlfoto) {
-        this.urlfoto = urlfoto;
-    }
-
     public String getPemilik() {
         return pemilik;
     }
@@ -105,6 +101,14 @@ public class CobaJson{
 
     public void setJeniskelamin(String jeniskelamin) {
         this.jeniskelamin = jeniskelamin;
+    }
+
+    public String getNotelepon() {
+        return notelepon;
+    }
+
+    public void setNotelepon(String notelepon) {
+        this.notelepon = notelepon;
     }
 
     public Integer getIdMap() {
@@ -130,6 +134,15 @@ public class CobaJson{
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
+
+    public String getStatusToko() {
+        return statusToko;
+    }
+
+    public void setStatusToko(String statusToko) {
+        this.statusToko = statusToko;
+    }
 }
+
 
 

@@ -1,4 +1,4 @@
-package com.chopchop.chupy;
+package com.chopchop.chupy.feature.petservice.adapter;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;

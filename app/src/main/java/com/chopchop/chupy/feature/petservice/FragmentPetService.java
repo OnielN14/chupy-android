@@ -1,4 +1,4 @@
-package com.chopchop.chupy;
+package com.chopchop.chupy.feature.petservice;
 
 import android.Manifest;
 import android.content.Context;
@@ -14,9 +14,12 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,15 +30,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chopchop.chupy.Adapter.CustomInfoWindowAdapter;
+import com.chopchop.chupy.feature.petservice.adapter.CustomInfoWindowAdapter;
+import com.chopchop.chupy.feature.petservice.adapter.PlaceAutoCompleteAdapter;
+import com.chopchop.chupy.R;
 import com.chopchop.chupy.Retrofit.ApiClient;
 import com.chopchop.chupy.Retrofit.ApiClientInterface;
-import com.chopchop.chupy.models.CobaJson;
-import com.chopchop.chupy.models.Example;
-import com.chopchop.chupy.models.PlaceInfo;
+import com.chopchop.chupy.feature.petservice.adapter.RecyclerViewAdapterProduct;
+import com.chopchop.chupy.feature.petservice.adapter.RecyclerViewNearby;
+import com.chopchop.chupy.feature.petservice.models.PetServiceJson;
+import com.chopchop.chupy.feature.petservice.models.Example;
+import com.chopchop.chupy.feature.petservice.models.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -58,6 +66,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,13 +116,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
     }
 
-//    @Override
-//    public void onInfoWindowClick(Marker marker) {
-//        Toast.makeText(getContext(), "Info window clicked",
-//                Toast.LENGTH_SHORT).show();
-//
-//    }
-
     private static final String TAG = "FragmentPetService";
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -128,6 +130,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     private AutoCompleteTextView mSearchText;
     private ImageView imgSearchIcon;
     private ImageView mGps;
+    private SlidingUpPanelLayout layout;
 
         //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -143,9 +146,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
 
     private View view;
-    private CobaJson coba;
+    private PetServiceJson coba;
 
 
+    RelativeLayout relativeLayout;
+    BottomSheetBehavior bottomSheetBehavior;
+
+    private ArrayList<String> mImgToko = new ArrayList<>();
+    private ArrayList<String> mNamaToko = new ArrayList<>();
+    private ArrayList<String> mDeskToko = new ArrayList<>();
 
     @Nullable
     @Override
@@ -155,6 +164,10 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         mSearchText = (AutoCompleteTextView) view.findViewById(R.id.input_search);
         imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
         mGps = (ImageView) view.findViewById(R.id.ic_gps);
+        layout = (SlidingUpPanelLayout) view.findViewById(R.id.sliding_layout);
+//        relativeLayout = (RelativeLayout) view.findViewById(R.id.btm_sheet);
+//        bottomSheetBehavior = BottomSheetBehavior.from(relativeLayout);
+
 
         imgSearchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,8 +177,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             }
         });
 
+//        getImages();
 
-        coba = new CobaJson();
         getMarker();
 
 
@@ -182,11 +195,16 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         call.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(retrofit2.Call<Example> call, Response<Example> response) {
-                List<CobaJson> list= response.body().getData();
+                List<PetServiceJson> list= response.body().getData();
 
+                Log.d(TAG, "onResponse: coba");
                 for (int i = 0; i<list.size(); i++){
-                    petShop1(list.get(i).getNama(),Double.valueOf(list.get(i).getLatitude()),Double.valueOf(list.get(i).getLongitude()), list.get(i).getDeskripsi(),list.get(i).getAlamat());
+                    Log.d(TAG, "onResponse: coba1");
+                    petShop1(list.get(i).getNama(),Double.valueOf(list.get(i).getLatitude()),Double.valueOf(list.get(i).getLongitude()), list.get(i).getDeskripsi(),list.get(i).getAlamat(),list.get(i).getFoto());
                     mHashMap.put(mMarker, Integer.valueOf(list.get(i).getId()));
+                    getImages(list.get(i).getFoto(), list.get(i).getNama(),list.get(i).getDeskripsi(),list.get(i).getId());
+
+//                    getImages(list.get(i).getNama(),list.get(i).getDeskripsi());
                 }
             }
 
@@ -265,6 +283,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                 Intent intent = new Intent(getContext(), DetailTokoActivity.class);
                 intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
                 intent.putExtra("title", marker.getTitle());
+//                intent.putExtra("deskripsi", info.getDeskripsi());
 
                 startActivity(intent);
             }
@@ -462,6 +481,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            getMarker();
 //            petShop1();
         }
     };
@@ -503,22 +523,28 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             moveCamera(new LatLng(place.getViewport().getCenter().latitude,
                     place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace);
 //            petShop1();
+            getMarker();
             places.release();
         }
     };
 
-    private void petShop1(String nama, Double latitude, Double longitude, String deskripsi, String alamat){
+    private void petShop1(String nama, Double latitude, Double longitude, String deskripsi, String alamat, String foto){
         Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
         BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
 
+
+
         MarkerOptions options = new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
-                    .title(nama)
+                .position(new LatLng(latitude, longitude))
+                .title(nama)
                 .snippet(deskripsi)
-                    .icon(markerIcon);
+                .icon(markerIcon);
 
         PlaceInfo info = new PlaceInfo();
-        info.setImage("contoh1");
+        info.setImage(foto);
+
+
+
 //        info.setAddress(include);
         info.setAddress(alamat);
 
@@ -540,8 +566,35 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    List<PetServiceJson> list = new ArrayList<PetServiceJson>();
 
+    private void getImages(String foto, String nama, String deskripsi, int id){
+        mImgToko.add("https://image.ibb.co/n4Dp18/contoh1.jpg");
+        mNamaToko.add(nama);
+        mDeskToko.add(deskripsi);
+        Log.d(TAG, "getImages: recyc");
 
+        PetServiceJson serviceJson = new PetServiceJson();
+        serviceJson.setNama(nama);
+        serviceJson.setDeskripsi(deskripsi);
+        serviceJson.setId(id);
+        serviceJson.setFoto(foto);
+        list.add(serviceJson);
 
+        //        mImgToko.add("https://image.ibb.co/bXsUzT/icon_indicator_mammals.png");
+//        mNamaToko.add("Cat");
+//        mDeskToko.add("korong");
+
+        initRecyclerViewNearby();
+    }
+    private void initRecyclerViewNearby (){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView recyclerView = view.findViewById(R.id.detToko);
+        recyclerView.setLayoutManager(layoutManager);
+//        RecyclerViewNearby adapterProduct = new RecyclerViewNearby(getContext(), mNamaToko, mDeskToko,mImgToko);
+
+        RecyclerViewNearby adapterProduct = new RecyclerViewNearby(getContext(), list);
+        recyclerView.setAdapter(adapterProduct);
+    }
 
 }

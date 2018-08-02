@@ -1,6 +1,5 @@
-package com.chopchop.chupy.models;
+package com.chopchop.chupy.feature.petservice.models;
 
-import com.chopchop.chupy.Coba;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,24 +7,12 @@ import java.util.List;
 
 public class Example {
 
-//    @SerializedName("data")
-//    @Expose
-//    private List<CobaJson> data = null;
-//
-//    public List<CobaJson> getData() {
-//        return data;
-//    }
-//
-//    public void setData(List<CobaJson> data) {
-//        this.data = data;
-//    }
-
     @SerializedName("success")
     @Expose
     private Boolean success;
     @SerializedName("data")
     @Expose
-    private List<CobaJson> data = null;
+    private List<PetServiceJson> data = null;
     @SerializedName("message")
     @Expose
     private String message;
@@ -38,11 +25,11 @@ public class Example {
         this.success = success;
     }
 
-    public List<CobaJson> getData() {
+    public List<PetServiceJson> getData() {
         return data;
     }
 
-    public void setData(List<CobaJson> data) {
+    public void setData(List<PetServiceJson> data) {
         this.data = data;
     }
 
