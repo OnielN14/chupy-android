@@ -30,12 +30,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chopchop.chupy.Adapter.CustomInfoWindowAdapter;
 import com.chopchop.chupy.Retrofit.ApiClient;
 import com.chopchop.chupy.Retrofit.ApiClientInterface;
-import com.chopchop.chupy.models.CobaJson;
-import com.chopchop.chupy.models.Example;
-import com.chopchop.chupy.models.PlaceInfo;
+import com.chopchop.chupy.feature.petservice.DetailTokoActivity;
+import com.chopchop.chupy.feature.petservice.adapter.CustomInfoWindowAdapter;
+import com.chopchop.chupy.feature.petservice.adapter.PlaceAutoCompleteAdapter;
+import com.chopchop.chupy.feature.petservice.models.Example;
+import com.chopchop.chupy.feature.petservice.models.PetServiceJson;
+import com.chopchop.chupy.feature.petservice.models.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -143,9 +145,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
 
     private View view;
-    private CobaJson coba;
-
-
 
     @Nullable
     @Override
@@ -154,9 +153,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         view = inflater.inflate(R.layout.fragment_petservice, container, false);
 
         bindView(view);
-
-
-        coba = new CobaJson();
         getMarker();
 
 
@@ -200,7 +196,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         call.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(retrofit2.Call<Example> call, Response<Example> response) {
-                List<CobaJson> list= response.body().getData();
+                List<PetServiceJson> list= response.body().getData();
 
                 for (int i = 0; i<list.size(); i++){
                     petShop1(list.get(i).getNama(),Double.valueOf(list.get(i).getLatitude()),Double.valueOf(list.get(i).getLongitude()), list.get(i).getDeskripsi(),list.get(i).getAlamat());

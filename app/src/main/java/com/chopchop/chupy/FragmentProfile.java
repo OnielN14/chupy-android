@@ -24,11 +24,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.support.constraint.Constraints.TAG;
-
-
 public class FragmentProfile extends Fragment {
 
+    private static final String TAG = "fragmentProfile";
     private CircleImageView profileImage;
     private TextView profileEditProfile;
     private TextView profileChangePassword;

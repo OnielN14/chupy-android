@@ -1,6 +1,7 @@
 package com.chopchop.chupy.feature.petservice;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -72,6 +73,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,8 +99,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         Toast.makeText(getContext(), "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-//        petShop1();
-
 
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
@@ -165,9 +165,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
         mGps = (ImageView) view.findViewById(R.id.ic_gps);
         layout = (SlidingUpPanelLayout) view.findViewById(R.id.sliding_layout);
-//        relativeLayout = (RelativeLayout) view.findViewById(R.id.btm_sheet);
-//        bottomSheetBehavior = BottomSheetBehavior.from(relativeLayout);
 
+        init();
 
         imgSearchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,11 +175,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                 hideSoftKeyboard();
             }
         });
-
-//        getImages();
-
-        getMarker();
-
 
         getLocationPermission();
         return view;
@@ -204,7 +198,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     mHashMap.put(mMarker, Integer.valueOf(list.get(i).getId()));
                     getImages(list.get(i).getFoto(), list.get(i).getNama(),list.get(i).getDeskripsi(),list.get(i).getId());
 
-//                    getImages(list.get(i).getNama(),list.get(i).getDeskripsi());
                 }
             }
 
@@ -241,8 +234,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                         || keyEvent.getAction() == KeyEvent.ACTION_DOWN
                         || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
 
-                    //execute our method for searching
-//                    petShop1();
                     geoLocate();
                     return true;
                 }
@@ -254,46 +245,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 getDeviceLocation();
-//                petShop1();
             }
         });
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Log.d(TAG, "onClick: clicked place info");
-                try {
-                    if (mMarker.isInfoWindowShown()){
-                        mMarker.hideInfoWindow();
-                    }else {
-                        Log.d(TAG, "onClick: place info: " + mPlace.toString());
-                        mMarker.showInfoWindow();
-                    }
-                }catch (NullPointerException e){
-                    Log.d(TAG, "onClick: NullPointerException " + e.getMessage());
-                }
-                return false;
-            }
-        });
-
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Log.d("Marker ID", String.valueOf(mHashMap.get(marker)));
-                Intent intent = new Intent(getContext(), DetailTokoActivity.class);
-                intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
-                intent.putExtra("title", marker.getTitle());
-//                intent.putExtra("deskripsi", info.getDeskripsi());
-
-                startActivity(intent);
-            }
-        });
-        hideSoftKeyboard();
+//        hideSoftKeyboard();
     }
 
     public void onPause() {
         super.onPause();
-        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.stopAutoManage(Objects.requireNonNull(getActivity()));
         mGoogleApiClient.disconnect();
     }
 
@@ -359,6 +319,19 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             }
         }catch (SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setTitle("Attention").setMessage("In order to run this app you need to give permission to this app");
+
+            AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
+
+        }catch(NullPointerException e){
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setTitle("Attention").setMessage("Please, turn on your GPS service");
+
+            AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
         }
     }
 
@@ -410,6 +383,38 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
     private void initMap(){
         Log.d(TAG, "initMap: initializing map");
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Log.d(TAG, "onClick: clicked place info");
+                try {
+                    if (mMarker.isInfoWindowShown()){
+                        mMarker.hideInfoWindow();
+                    }else {
+                        Log.d(TAG, "onClick: place info: " + mPlace.toString());
+                        mMarker.showInfoWindow();
+                    }
+                }catch (NullPointerException e){
+                    Log.d(TAG, "onClick: NullPointerException " + e.getMessage());
+                }
+                return false;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Log.d("Marker ID", String.valueOf(mHashMap.get(marker)));
+                Intent intent = new Intent(getContext(), DetailTokoActivity.class);
+                intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
+                intent.putExtra("title", marker.getTitle());
+//                intent.putExtra("deskripsi", info.getDeskripsi());
+
+                startActivity(intent);
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
@@ -420,13 +425,11 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
-        if(ContextCompat.checkSelfPermission(this.getContext(),
+        if(ContextCompat.checkSelfPermission(getContext(),
                 FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getContext(),
+            if(ContextCompat.checkSelfPermission(getContext(),
                     COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 mLocationPermissionsGranted = true;
-                initMap();
-
             }else{
                 ActivityCompat.requestPermissions(getActivity(),
                         permissions,
@@ -456,8 +459,10 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     }
                     Log.d(TAG, "onRequestPermissionsResult: permission granted");
                     mLocationPermissionsGranted = true;
+
                     //initialize our mapss
                     initMap();
+                    getMarker();
                 }
             }
         }
@@ -532,8 +537,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
         BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
 
-
-
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
                 .title(nama)
@@ -543,17 +546,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         PlaceInfo info = new PlaceInfo();
         info.setImage(foto);
 
-
-
-//        info.setAddress(include);
         info.setAddress(alamat);
 
-        CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
-        mMap.setInfoWindowAdapter(customInfoWindow);
+        if (mLocationPermissionsGranted){
+            CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
+            mMap.setInfoWindowAdapter(customInfoWindow);
+            mMarker = mMap.addMarker(options);
 
-        mMarker = mMap.addMarker(options);
-
-        mMarker.setTag(info);
+            mMarker.setTag(info);
+        }
     }
 
 
