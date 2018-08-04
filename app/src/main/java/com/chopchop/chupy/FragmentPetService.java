@@ -153,10 +153,10 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         view = inflater.inflate(R.layout.fragment_petservice, container, false);
 
         bindView(view);
-        getMarker();
-
 
         getLocationPermission();
+
+        getMarker();
         return view;
 
     }
@@ -250,7 +250,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 getDeviceLocation();
-//                petShop1();
             }
         });
 
@@ -415,23 +414,46 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
-        if(ContextCompat.checkSelfPermission(this.getContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                mLocationPermissionsGranted = true;
-                initMap();
+        if (ContextCompat.checkSelfPermission(getActivity(), FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
 
-            }else{
+            // Should show explanation
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), FINE_LOCATION)){
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            }
+            else{
+                // No explanation needed, we can request the permission.
+
                 ActivityCompat.requestPermissions(getActivity(),
                         permissions,
                         LOCATION_PERMISSION_REQUEST_CODE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
             }
-        }else{
-            ActivityCompat.requestPermissions(getActivity(),
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
+
         }
+//
+//        if(ContextCompat.checkSelfPermission(this.getContext(),
+//                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+//            if(ContextCompat.checkSelfPermission(this.getContext(),
+//                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+//                mLocationPermissionsGranted = true;
+//                initMap();
+//
+//            }else{
+//                ActivityCompat.requestPermissions(getActivity(),
+//                        permissions,
+//                        LOCATION_PERMISSION_REQUEST_CODE);
+//            }
+//        }else{
+//            ActivityCompat.requestPermissions(getActivity(),
+//                    permissions,
+//                    LOCATION_PERMISSION_REQUEST_CODE);
+//        }
     }
 
     @Override
@@ -446,11 +468,12 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                         if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
                             mLocationPermissionsGranted = false;
                             Log.d(TAG, "onRequestPermissionsResult: permission failed");
-                            return;
+
                         }
                     }
                     Log.d(TAG, "onRequestPermissionsResult: permission granted");
                     mLocationPermissionsGranted = true;
+
                     //initialize our mapss
                     initMap();
                 }
@@ -553,9 +576,5 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         drawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
-
-
-
-
 
 }
