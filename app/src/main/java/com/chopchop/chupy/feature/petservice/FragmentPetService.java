@@ -1,7 +1,10 @@
 package com.chopchop.chupy.feature.petservice;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,6 +20,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,6 +78,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,11 +86,6 @@ import retrofit2.Response;
 
 public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
-
-    public FragmentPetService() {
-        // Required empty public constructor
-    }
-
 
 
     @Override
@@ -93,12 +95,9 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //Map Ready
-        Toast.makeText(getContext(), "Map is Ready", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
-//        petShop1();
-
 
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
@@ -110,11 +109,11 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
             init();
-        }
 
+        }
     }
+
 
     private static final String TAG = "FragmentPetService";
 
@@ -168,7 +167,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 //        relativeLayout = (RelativeLayout) view.findViewById(R.id.btm_sheet);
 //        bottomSheetBehavior = BottomSheetBehavior.from(relativeLayout);
 
-
         imgSearchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,11 +174,8 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                 hideSoftKeyboard();
             }
         });
-
-//        getImages();
-
         getMarker();
-
+//        getLocationPermission();
 
         getLocationPermission();
         return view;
@@ -215,8 +210,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         });
     }
 
-
-
     public void init() {
         Log.d(TAG, "init: initializing");
 
@@ -244,7 +237,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     //execute our method for searching
 //                    petShop1();
                     geoLocate();
-                    return true;
+//                    return true;
                 }
                 return false;
             }
@@ -254,7 +247,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 getDeviceLocation();
-//                petShop1();
             }
         });
 
@@ -291,11 +283,30 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         hideSoftKeyboard();
     }
 
-    public void onPause() {
-        super.onPause();
-        mGoogleApiClient.stopAutoManage(getActivity());
-        mGoogleApiClient.disconnect();
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.connect();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.stopAutoManage(Objects.requireNonNull(getActivity()));
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+
+
+//    public void onPause() {
+//            super.onPause();
+////        mGoogleApiClient.stopAutoManage(getActivity());
+//            mGoogleApiClient.stopAutoManage(Objects.requireNonNull(getActivity()));
+//            mGoogleApiClient.disconnect();
+//    }
 
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
@@ -325,7 +336,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         try{
             if(mLocationPermissionsGranted){
@@ -336,19 +347,20 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: found location!");
-
                             Location currentLocation = (Location) task.getResult();
 
-//                            kalo lokasi isinya null
-                            if(currentLocation == null){
-                                LocationManager locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
+                            try{
+                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                        DEFAULT_ZOOM,
+                                        "My Location");
+                            }catch (NullPointerException e){
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+                                dialogBuilder.setTitle("Attention").setMessage("Please, turn on your GPS service");
 
-                                currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                AlertDialog dialog = dialogBuilder.create();
+                                dialog.show();
                             }
 
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                    DEFAULT_ZOOM,
-                                    "My Location");
 
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
@@ -359,6 +371,17 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             }
         }catch (SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setTitle("Attention").setMessage("In order to run this app you need to give permission to this app");
+
+            AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
+        }catch(NullPointerException e){
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setTitle("Attention").setMessage("Please, turn on your GPS service");
+
+            AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
         }
     }
 
@@ -368,10 +391,10 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
         mMap.clear();
 
-//        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity()));
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
 
-        if (placeInfo != null){
-            try {
+        if(placeInfo != null){
+            try{
 //                String snippet = "Address: " + placeInfo.getAddress() + "\n" +
 //                        "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
 //                        "Website: " + placeInfo.getWebsiteUri() + "\n" +
@@ -382,18 +405,21 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 //                        .title(placeInfo.getName())
 //                        .snippet(snippet);
 //                mMarker = mMap.addMarker(options);
-//                petShop1();
 
             }catch (NullPointerException e){
-                Log.d(TAG, "moveCamera: NUllPointerExceprion: " + e.getMessage());
+                Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage() );
             }
-        }else {
-//            mMap.addMarker(new MarkerOptions().position(latLng));
+        }else{
+            mMap.addMarker(new MarkerOptions().position(latLng));
         }
+
         hideSoftKeyboard();
     }
 
     private void moveCamera(LatLng latLng, float zoom, String title){
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
@@ -402,7 +428,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 //                    .position(latLng)
 //                    .title(title);
 //            mMap.addMarker(options);
-//            petShop1();
         }
 
         hideSoftKeyboard();
@@ -415,18 +440,20 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         mapFragment.getMapAsync(this);
     }
 
-    private void getLocationPermission(){
+
+    public void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if(ContextCompat.checkSelfPermission(this.getContext(),
+        
+        if(ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(),
                 FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getContext(),
+            Log.d(TAG, "getLocationPermission: cobahayoo1");
+            if(ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(),
                     COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 mLocationPermissionsGranted = true;
+                Log.d(TAG, "getLocationPermission: cobahayoo2");
                 initMap();
-
             }else{
                 ActivityCompat.requestPermissions(getActivity(),
                         permissions,
@@ -437,6 +464,16 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     permissions,
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
+    }
+
+    private void popup(){
+        Log.d(TAG, "popup: gegegeg");
+        Fragment fragment2 = new Fragment();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction =        fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_content, fragment2);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -456,12 +493,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     }
                     Log.d(TAG, "onRequestPermissionsResult: permission granted");
                     mLocationPermissionsGranted = true;
-                    //initialize our mapss
+                    //initialize our map
                     initMap();
+
                 }
             }
         }
     }
+
+
 
     private void hideSoftKeyboard(){
         final InputMethodManager imm = (InputMethodManager) getActivity()
@@ -542,18 +582,14 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
         PlaceInfo info = new PlaceInfo();
         info.setImage(foto);
-
-
-
-//        info.setAddress(include);
         info.setAddress(alamat);
 
-        CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
-        mMap.setInfoWindowAdapter(customInfoWindow);
-
-        mMarker = mMap.addMarker(options);
-
-        mMarker.setTag(info);
+        if (mLocationPermissionsGranted){
+            CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
+            mMap.setInfoWindowAdapter(customInfoWindow);
+            mMarker = mMap.addMarker(options);
+            mMarker.setTag(info);
+        }
     }
 
 

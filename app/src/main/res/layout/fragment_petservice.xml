@@ -79,7 +79,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            tools:context=".Fragment.FragmentPetService" />
+            tools:context=".Fragment.FragmentPetService"
+            android:layout_marginBottom="150dp"/>
 
 
         <include
