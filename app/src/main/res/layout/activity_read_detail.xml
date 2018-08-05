@@ -1,0 +1,78 @@
+<android.support.design.widget.CoordinatorLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/AppTheme.FullActionBar">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_read"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar_read"
+            app:titleTextColor="@android:color/white"
+            >
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_marginTop="?attr/actionBarSize"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:id="@+id/linear_layout_search_tags"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/text_view_read_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sample title"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
+            <TextView
+                android:id="@+id/text_view_read_date"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sample Date, date monthDate yearDate"
+                android:layout_marginBottom="8dp"/>
+
+            <ImageView
+                android:id="@+id/image_view_read_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/chupy_read_item_image_height"
+                android:src="@drawable/chupy_box"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/text_view_read_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:linksClickable="true"
+                android:textColorLink="@color/colorAccent"
+                tools:text="Sample Text"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>

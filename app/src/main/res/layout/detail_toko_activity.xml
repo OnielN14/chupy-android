@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detailToko"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:id="@+id/pic_appbar"
+        android:layout_height="260dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/deskImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax"
+                android:fitsSystemWindows="true"
+                android:src="@drawable/contoh1"
+                android:scaleType="centerCrop"/>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp">
+                <TextView
+                    android:id="@+id/detNama"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Toko"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/detNama"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/detDeskripsi"
+                    android:text="Deskripsi Penjualan Toko"/>
+
+                <TextView
+                    android:id="@+id/detProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/detDeskripsi"
+                    android:text="Product"
+                    android:layout_marginTop="30dp"
+                    android:textSize="20sp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/imgProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/detProduct"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    ></android.support.v7.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/detLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imgProduct"
+                    android:text="Location"
+                    android:layout_marginTop="30dp"
+                    android:textSize="20sp"/>
+                <ImageView
+                    android:id="@+id/mapLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/detLocation"
+                    android:scaleType="centerCrop">
+
+                </ImageView>
+                <TextView
+                    android:id="@+id/detContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/mapLocation"
+                    android:text="Contact"
+                    android:layout_marginTop="30dp"
+                    android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/detContact"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/detAlamat"
+                    android:text="Alamat : "/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/detAlamat"
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/detStatus"
+                    android:text="Status : "/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/detStatus"
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/detTelp"
+                    android:text="No. Tlp : "/>
+                <Button
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:textSize="14sp"
+                    android:id="@+id/btnKontak"
+                    android:layout_below="@+id/detTelp"
+                    android:text="TELEPHONE"
+                    android:background="@drawable/button"
+                    android:textColor="#FFFFFFFF"/>
+                <Button
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:textSize="14sp"
+                    android:id="@+id/btnTandai"
+                    android:layout_below="@+id/btnKontak"
+                    android:text="TANDAI"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/button"
+                    android:textColor="#FFFFFFFF"/>
+
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
