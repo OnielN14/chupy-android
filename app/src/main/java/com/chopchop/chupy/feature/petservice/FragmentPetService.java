@@ -410,7 +410,7 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                 Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage() );
             }
         }else{
-            mMap.addMarker(new MarkerOptions().position(latLng));
+//            mMap.addMarker(new MarkerOptions().position(latLng));
         }
 
         hideSoftKeyboard();
@@ -569,27 +569,32 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     };
 
     private void petShop1(String nama, Double latitude, Double longitude, String deskripsi, String alamat, String foto){
-        Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
-        BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+        try{
+            Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
+            BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
 
 
 
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(latitude, longitude))
-                .title(nama)
-                .snippet(deskripsi)
-                .icon(markerIcon);
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(latitude, longitude))
+                    .title(nama)
+                    .snippet(deskripsi)
+                    .icon(markerIcon);
 
-        PlaceInfo info = new PlaceInfo();
-        info.setImage(foto);
-        info.setAddress(alamat);
+            PlaceInfo info = new PlaceInfo();
+            info.setImage(foto);
+            info.setAddress(alamat);
 
-        if (mLocationPermissionsGranted){
-            CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
-            mMap.setInfoWindowAdapter(customInfoWindow);
-            mMarker = mMap.addMarker(options);
-            mMarker.setTag(info);
+            if (mLocationPermissionsGranted){
+                CustomInfoWindowAdapter customInfoWindow = new CustomInfoWindowAdapter(getActivity());
+                mMap.setInfoWindowAdapter(customInfoWindow);
+                mMarker = mMap.addMarker(options);
+                mMarker.setTag(info);
+            }
+        }catch (IllegalStateException e){
+
         }
+
     }
 
 

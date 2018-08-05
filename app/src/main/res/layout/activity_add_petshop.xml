@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_read"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar_regis"
+            app:titleTextColor="@android:color/white"
+            app:subtitleTextColor="@android:color/white"
+            android:theme="@style/AppTheme.FullActionBar"
+            >
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:id="@+id/rlAdd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inShopName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edShopName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Pet Shop Name"
+                    android:nextFocusDown="@id/edDesc"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:nextFocusDown="@id/edAlamat"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inAlamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edAlamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Address"
+                    android:nextFocusDown="@id/edStatus"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Status"
+                    android:nextFocusDown="@id/edNoTelp"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inNoTelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edNoTelp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="No. Telp"
+                    android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <TextView
+                android:id="@+id/detPhotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text=" Pet Shop Photo"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/selectPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Photo" />
+
+            <TextView
+                android:id="@+id/detMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text=" Location Pet Shop"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/pickLoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick Location" />
+
+            <Button
+                android:id="@+id/btnRegis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Register" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
