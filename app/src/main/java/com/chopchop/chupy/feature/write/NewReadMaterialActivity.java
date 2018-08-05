@@ -1,11 +1,9 @@
 package com.chopchop.chupy.feature.write;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
@@ -18,13 +16,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.models.ReadMaterialCategory;
 import com.chopchop.chupy.models.Tag;
+import com.chopchop.chupy.utilities.ChupyServiceController;
+import com.chopchop.chupy.utilities.SharedPrefManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.hootsuite.nachos.NachoTextView;
 import com.hootsuite.nachos.chip.Chip;
@@ -36,9 +36,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class NewReadMaterialActivity extends AppCompatActivity {
 
     private static final String TAG = "Debuggin lol";
+
+    private static final String POST_TYPE_DRAFT = "draft";
+    private static final String POST_TYPE_PUBLISH = "publish";
+
     private static final int PICK_IMAGE_CODE = 1;
 
     private Toolbar mToolbar;
@@ -54,41 +65,44 @@ public class NewReadMaterialActivity extends AppCompatActivity {
 
     private List<ReadMaterialCategory> readMaterialCategoryList = new ArrayList<>();
     private List<Tag> tagList = new ArrayList<>();
-    private String[] categoryTitleList = {"News", "Article", "Tips & Tricks"};
+//    private String[] categoryTitleList = {"News", "Article", "Tips & Tricks"};
     private List<String> tagSuggestion = new ArrayList<>();
 
     private File imageFile;
+
+    private SharedPrefManager chupySharedPrefManager;
+    private ChupyServiceController serviceController = new ChupyServiceController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_read_material);
 
+        chupySharedPrefManager = new SharedPrefManager(this);
+
         bindView();
         initCategoryData();
-
-        Bundle bundle = getIntent().getExtras();
-
-        Type listOfTag = new TypeToken<List<Tag>>(){}.getType();
-
-        tagList = new Gson().fromJson(bundle.getString("TagList"),listOfTag);
+        bindData();
 
         for (Tag tag: tagList) {
             tagSuggestion.add(tag.getTagName());
         }
 
+        initTagNachoTextView();
+
+    }
+
+    private void initTagNachoTextView() {
+
         nachoAdapterArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, tagSuggestion);
         tagNachoTextView.setAdapter(nachoAdapterArrayAdapter);
         tagNachoTextView.addChipTerminator(',', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
+    }
 
-        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter(this, R.layout.custom_simple_spinner_item, categoryTitleList);
-        categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categoryList.setAdapter(categoryArrayAdapter);
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.write_new_page_title);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    private void bindData() {
+        Bundle bundle = getIntent().getExtras();
+        Type listOfTag = new TypeToken<List<Tag>>(){}.getType();
+        tagList = new Gson().fromJson(bundle.getString("TagList"),listOfTag);
     }
 
     private void initCategoryData() {
@@ -100,9 +114,18 @@ public class NewReadMaterialActivity extends AppCompatActivity {
     private void bindView() {
         tagNachoTextView = findViewById(R.id.nacho_text_view_new_content_tag);
         mToolbar = findViewById(R.id.toolbar_write);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(R.string.write_new_page_title);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         readMaterialTitle = findViewById(R.id.edit_text_new_content_title);
         readMaterialDescription = findViewById(R.id.edit_text_new_content_description);
         categoryList = findViewById(R.id.spinner_new_content_category);
+        ArrayAdapter<String> categoryArrayAdapter = new ArrayAdapter(this, R.layout.custom_simple_spinner_item, getResources().getStringArray(R.array.read_tab_menu));
+        categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categoryList.setAdapter(categoryArrayAdapter);
+
         addPictureButton = findViewById(R.id.button_add_picture);
         previewImage = findViewById(R.id.image_view_preview_new_content);
         previewImage.setVisibility(View.GONE);
@@ -149,26 +172,70 @@ public class NewReadMaterialActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.write_post_save:
-                Toast.makeText(this, "Saving.. just kidding", Toast.LENGTH_SHORT).show();
-
-//                for (Chip chip: tagNachoTextView.getAllChips()) {
-//
-//                }
-
-                String newContentTitle = readMaterialTitle.getText().toString();
-                String newContentDescription = readMaterialDescription.getText().toString();
-                String newContentCategory = categoryList.getSelectedItem().toString();
-                String[] newContentTags = (String[]) tagNachoTextView.getAllChips().toArray();
-
+                postKonten(POST_TYPE_DRAFT);
 
                 break;
 
             case R.id.write_post_publish:
-                Toast.makeText(this, "Publishing.. just kidding (lol)", Toast.LENGTH_SHORT).show();
+                postKonten(POST_TYPE_PUBLISH);
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void postKonten(final String postTypeDraft) {
+
+        String sendingMessage = "";
+        if (postTypeDraft == POST_TYPE_DRAFT){
+            sendingMessage = getString(R.string.process_message_saving);
+        }
+        else if (postTypeDraft == POST_TYPE_PUBLISH){
+            sendingMessage = getString(R.string.process_message_publishing);
+        }
+
+        Toast.makeText(this, sendingMessage, Toast.LENGTH_LONG);
+
+        RequestBody reqFile;
+        MultipartBody.Part imagePart;
+        if (imageFile != null){
+            reqFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+            imagePart = MultipartBody.Part.createFormData("foto", imageFile.getName(), reqFile);
+        }
+        else{
+            reqFile = null;
+            imagePart = MultipartBody.Part.createFormData("none", "none");
+        }
+        serviceController.getService().postKonten(chupySharedPrefManager.getSharedId(),readMaterialTitle.getText().toString(),readMaterialDescription.getText().toString(), postTypeDraft, parseChipsToStringArray(tagNachoTextView.getAllChips()),categoryList.getSelectedItemPosition()+1, imagePart).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.d(TAG, "onResponse: "+response.body());
+                String responseMessage = "";
+                if (postTypeDraft == POST_TYPE_DRAFT){
+                    responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_saved);
+                }
+                else if (postTypeDraft == POST_TYPE_PUBLISH){
+                    responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_published);
+                }
+
+                Toast.makeText(NewReadMaterialActivity.this, responseMessage, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(NewReadMaterialActivity.this, NewReadMaterialActivity.this.getString(R.string.process_message_error_undefined), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private String[] parseChipsToStringArray(List<Chip> allChips) {
+        List<String> tempString = new ArrayList<>();
+        for (Chip item: allChips) {
+            tempString.add(item.getText().toString());
+        }
+
+        return tempString.toArray(new String[0]);
     }
 
     @Override

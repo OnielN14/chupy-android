@@ -97,6 +97,11 @@
     <string name="registration_success">Registration Success</string>
 
     <string name="process_message_saving">Saving</string>
+    <string name="process_message_saved">Saved</string>
+
+    <string name="process_message_publishing">Publishing</string>
+    <string name="process_message_published">Published</string>
+
     <string name="process_message_sending">Sending</string>
     <string name="process_message_logging">Logging</string>
     <string name="process_message_error_undefined">Something Wrong</string>

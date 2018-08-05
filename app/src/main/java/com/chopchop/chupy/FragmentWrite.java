@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class FragmentWrite extends Fragment {
     private Toolbar mToolbar;
     private RecyclerView publishedKontenList;
     private LinearLayout loadingArea;
+    private Button deleteButton;
+    private Button editButton;
 
     private List<Tag> tagList = new ArrayList<>();
     private List<ReadMaterial> kontenList = new ArrayList<>();
@@ -119,6 +122,8 @@ public class FragmentWrite extends Fragment {
         publishedKontenList = rootView.findViewById(R.id.recycler_view_user_post);
         publishedKontenList.setLayoutManager(new LinearLayoutManager(rootView.getContext(),LinearLayoutManager.VERTICAL, false));
 
+        deleteButton = rootView.findViewById(R.id.button_delete_post);
+        editButton = rootView.findViewById(R.id.button_edit_post);
     }
 
     private void fetchTag() {

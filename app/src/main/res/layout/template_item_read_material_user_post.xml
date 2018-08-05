@@ -28,6 +28,18 @@
             android:backgroundTint="@color/colorPrimaryDark"
             android:foreground="?attr/selectableItemBackground"
             android:layout_alignParentRight="true"
+            android:layout_marginBottom="8dp"
+            />
+
+        <Button
+            android:layout_below="@id/button_delete_post"
+            android:id="@+id/button_edit_post"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:background="@drawable/ic_edit_black_24dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_alignParentRight="true"
             />
 
         <LinearLayout

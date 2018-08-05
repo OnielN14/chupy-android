@@ -33,6 +33,9 @@ public interface ChupyService{
     @GET("api/kategoriKontens")
     Call<JsonObject> listReadMaterialCategory();
 
+    @Multipart
+    @POST("api/kontens")
+    Call<JsonObject> postKonten(@Part("userId") int userId, @Part("judul") String judul, @Part("deskripsi") String deskripsi, @Part("statuspost") String statuspost, @Part("tag") String[] tag, @Part("idKategori") int idKategori, @Part MultipartBody.Part file);
 
 
     @FormUrlEncoded
