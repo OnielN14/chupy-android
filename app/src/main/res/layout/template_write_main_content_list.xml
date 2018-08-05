@@ -4,21 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
     <TextView
         android:id="@+id/text_view_list_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="21 Juli 2018"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:layout_marginBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_user_post_child"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
 
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

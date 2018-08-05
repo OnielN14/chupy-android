@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,11 +29,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.support.constraint.Constraints.TAG;
 
 
 /**
@@ -42,11 +47,11 @@ public class FragmentWrite extends Fragment {
 
     private Toolbar mToolbar;
     private RecyclerView publishedKontenList;
-    private UserKontenListAdapter userKontenListAdapter;
     private LinearLayout loadingArea;
 
     private List<Tag> tagList = new ArrayList<>();
     private List<ReadMaterial> kontenList = new ArrayList<>();
+    private List<ReadMaterial.ReadMaterialListByDate> kontenListByDate = new ArrayList<>();
 
     private SharedPrefManager chupySharedPrefManager;
     private ChupyServiceController serviceController = new ChupyServiceController();
@@ -67,10 +72,13 @@ public class FragmentWrite extends Fragment {
 
         bindView(rootView);
         fetchTag();
-        fetchKonten();
         bindData();
 
         return rootView;
+    }
+
+    private void bindData() {
+        fetchKonten();
     }
 
     private void fetchKonten() {
@@ -80,18 +88,62 @@ public class FragmentWrite extends Fragment {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 switch (response.code()){
                     case 200:
-                        
+                        kontenList = serviceController.parseDataKontenFromService(response.body());
+                        kontenListByDate = parseKontenListByDate(kontenList);
+                        publishedKontenList.setAdapter( new UserKontenListAdapter(kontenListByDate));
                         break;
                 }
+
+                loadingArea.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 t.printStackTrace();
                 Toast.makeText(getActivity(), getString(R.string.process_message_error_undefined), Toast.LENGTH_SHORT).show();
+                loadingArea.setVisibility(View.GONE);
             }
         });
     }
+
+    private List<ReadMaterial.ReadMaterialListByDate> parseKontenListByDate(List<ReadMaterial> kontenList) {
+        List<String> tempDateString;
+        List<ReadMaterial.ReadMaterialListByDate> tempKontenByDateList = new ArrayList<>();
+        tempDateString = extractDateListFromKonteList(kontenList);
+
+        ReadMaterial.ReadMaterialListByDate tempParsedList;
+        for (String item : tempDateString) {
+            List<ReadMaterial> tempParsedKontenList = new ArrayList<>();
+
+            for (ReadMaterial konten: kontenList) {
+                if (item.equals(getMonthYear(konten.getDate()))){
+                    tempParsedKontenList.add(konten);
+                }
+                Log.d(TAG, "parseKontenListByDate: "+item+" == "+getMonthYear(konten.getDate())+" is "+ item.equals(konten.getDate()));
+
+            }
+
+
+            tempParsedList = new ReadMaterial().new ReadMaterialListByDate(tempParsedKontenList,item);
+            tempKontenByDateList.add(tempParsedList);
+        }
+
+        return tempKontenByDateList;
+    }
+
+    private String getMonthYear(String date){
+        return date.split(" ")[1] + " " + date.split(" ")[2];
+    }
+
+    private List<String> extractDateListFromKonteList(List<ReadMaterial> kontenList) {
+        Set<String> tempDateString = new HashSet<>();
+        for (ReadMaterial konten : kontenList){
+            tempDateString.add(getMonthYear(konten.getDate()));
+        }
+
+        return new ArrayList<>(tempDateString);
+    }
+
 
     private void bindView(ViewGroup rootView) {
         loadingArea = rootView.findViewById(R.id.linear_layout_loading);

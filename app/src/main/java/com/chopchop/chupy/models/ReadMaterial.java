@@ -13,6 +13,9 @@ public class ReadMaterial {
     private Photo photo;
     private String statusPost;
 
+    public ReadMaterial() {
+    }
+
     public ReadMaterial(int id, String title, String description, String categoryName, int categoryId, String date, Photo photo, List<Tag> tagList, String statusPost) {
         this.id = id;
         this.title = title;

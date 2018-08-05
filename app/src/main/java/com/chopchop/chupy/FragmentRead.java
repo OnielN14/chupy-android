@@ -305,7 +305,14 @@ public class FragmentRead extends Fragment {
         controller.fetchReadMaterialCall().enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                readMaterialList = parseDataFromService(response.body());
+                readMaterialList = controller.parseDataKontenFromService(response.body());
+
+                List<Tag> tempTagList = new ArrayList<>();
+                for (ReadMaterial itemRead: readMaterialList) {
+                    tempTagList.addAll(itemRead.getTagList());
+                }
+
+                initiateTagRecyclerView(tempTagList);
 
                 tagAdapter = new TagSearchAdapter(tagList);
 
@@ -323,34 +330,6 @@ public class FragmentRead extends Fragment {
         });
     }
 
-    private List<ReadMaterial> parseDataFromService(JsonObject response){
-
-        List<ReadMaterial> tempReadMaterials = new ArrayList<>();
-        List<Tag> contentTagList, tempGlobalTagList = new ArrayList<>();
-        Photo tempPhoto;
-        JsonArray data = response.getAsJsonArray("data");
-        for (JsonElement item: data) {
-
-
-            if (item.getAsJsonObject().get("foto").getAsJsonArray().size() != 0){
-                tempPhoto = parsePhotoFromData(item.getAsJsonObject().get("foto").getAsJsonArray().get(0));
-            }
-            else{
-                tempPhoto = null;
-            }
-
-            contentTagList = parseTagFromContent(item.getAsJsonObject().get("tag"));
-
-            tempGlobalTagList.addAll(contentTagList);
-
-            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), item.getAsJsonObject().get("tanggalPost").getAsString(), tempPhoto, contentTagList, item.getAsJsonObject().get("statuspost").getAsString()));
-
-        }
-
-        initiateTagRecyclerView(tempGlobalTagList);
-
-        return tempReadMaterials;
-    }
 
     private void initiateTagRecyclerView(List<Tag> tempTagList) {
 
@@ -370,18 +349,6 @@ public class FragmentRead extends Fragment {
 
     }
 
-    private List<Tag> parseTagFromContent(JsonElement tag) {
-        List<Tag> tempTag = new ArrayList<>();
-        for (JsonElement item : tag.getAsJsonArray()){
-            tempTag.add(new Tag(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("tag").getAsString()));
-        }
-
-        return tempTag;
-    }
-
-    private Photo parsePhotoFromData(JsonElement foto){
-        return new Photo(foto.getAsJsonObject().get("id").getAsInt(), foto.getAsJsonObject().get("foto").getAsString(), ChupyService.baseUrl);
-    }
 
     public static List<ReadMaterial> categorizedReadMaterial(List<ReadMaterial> readMaterialList, int readMaterialCategory) {
         List<ReadMaterial> tempList = new ArrayList<>();
