@@ -28,13 +28,6 @@
             android:paddingLeft="8dp">
 
             <TextView
-                android:id="@+id/text_view_item_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="20 Jul 2018"
-                android:textSize="12sp" />
-
-            <TextView
                 android:id="@+id/text_view_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,6 +40,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="This is just a description of the item. You don't need to worry about this, you only need to change the value of ..." />
+
+            <TextView
+                android:paddingTop="8dp"
+                android:id="@+id/text_view_item_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="20 Jul 2018"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -66,6 +66,7 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
         private TextView itemTitle;
         private TextView itemDate;
         private TextView itemDescription;
+        private TextView itemCategory;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -74,6 +75,9 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
             itemTitle = itemView.findViewById(R.id.text_view_item_title);
             itemDate = itemView.findViewById(R.id.text_view_item_date);
             itemDescription = itemView.findViewById(R.id.text_view_item_description);
+            if(listType != READ_ONLY){
+                itemCategory = itemView.findViewById(R.id.text_view_item_category);
+            }
         }
 
         public void bindData(ReadMaterial item){
@@ -99,6 +103,10 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
             itemDescription.setText(tempDesc);
 
             itemDate.setText(item.getDate());
+
+            if (listType != READ_ONLY){
+                itemCategory.setText(itemView.getResources().getStringArray(R.array.read_tab_menu)[item.getCategoryId()-1]);
+            }
         }
     }
 }

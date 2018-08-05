@@ -10,11 +10,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/chupy_read_item_height">
+        android:layout_height="125dp">
 
         <ImageView
             android:id="@+id/image_view_item_thumbnail"
-            android:layout_width="@dimen/chupy_read_item_image_width"
+            android:layout_width="125dp"
             android:layout_height="match_parent"
             android:src="@drawable/chupy_box"
             android:scaleType="centerCrop"
@@ -34,10 +34,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingHorizontal="8dp">
+            android:paddingRight="16dp"
+            android:paddingLeft="8dp">
 
             <TextView
-                android:id="@+id/text_view_item_date"
+                android:id="@+id/text_view_item_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="20 Jul 2018"
@@ -55,7 +56,14 @@
                 android:id="@+id/text_view_item_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="This is just a description of the item. You don't need to worry about this, you only need to change the value of ..." />
+                tools:text="This is just a description of the item. You don't need to worry about this ..." />
+            <TextView
+                android:layout_marginTop="8dp"
+                android:id="@+id/text_view_item_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="20 Jul 2018"
+                android:textSize="12sp" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>
