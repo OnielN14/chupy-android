@@ -1,5 +1,7 @@
 package com.chopchop.chupy.utilities;
 
+import android.util.Log;
+
 import com.chopchop.chupy.models.Photo;
 import com.chopchop.chupy.models.ReadMaterial;
 import com.chopchop.chupy.models.Tag;
@@ -11,11 +13,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class ChupyServiceController {
 
@@ -88,5 +94,43 @@ public class ChupyServiceController {
 
     private Photo parsePhotoFromData(JsonElement foto){
         return new Photo(foto.getAsJsonObject().get("id").getAsInt(), foto.getAsJsonObject().get("foto").getAsString(), ChupyService.baseUrl);
+    }
+
+
+    public List<ReadMaterial.ReadMaterialListByDate> parseKontenListByDate(List<ReadMaterial> kontenList) {
+        List<String> tempDateString;
+        List<ReadMaterial.ReadMaterialListByDate> tempKontenByDateList = new ArrayList<>();
+        tempDateString = extractDateListFromKontenList(kontenList);
+
+        ReadMaterial.ReadMaterialListByDate tempParsedList;
+        for (String item : tempDateString) {
+            List<ReadMaterial> tempParsedKontenList = new ArrayList<>();
+
+            for (ReadMaterial konten: kontenList) {
+                if (item.equals(getMonthYear(konten.getDate()))){
+                    tempParsedKontenList.add(konten);
+                }
+                Log.d(TAG, "parseKontenListByDate: "+item+" == "+getMonthYear(konten.getDate())+" is "+ item.equals(konten.getDate()));
+
+            }
+
+            tempParsedList = new ReadMaterial().new ReadMaterialListByDate(tempParsedKontenList,item);
+            tempKontenByDateList.add(tempParsedList);
+        }
+
+        return tempKontenByDateList;
+    }
+
+    private String getMonthYear(String date){
+        return date.split(" ")[1] + " " + date.split(" ")[2];
+    }
+
+    private List<String> extractDateListFromKontenList(List<ReadMaterial> kontenList) {
+        Set<String> tempDateString = new HashSet<>();
+        for (ReadMaterial konten : kontenList){
+            tempDateString.add(getMonthYear(konten.getDate()));
+        }
+
+        return new ArrayList<>(tempDateString);
     }
 }

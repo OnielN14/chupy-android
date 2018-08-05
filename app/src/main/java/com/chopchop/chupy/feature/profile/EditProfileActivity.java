@@ -126,21 +126,22 @@ public class EditProfileActivity extends AppCompatActivity {
                 imageProfile.setImageBitmap(bitmap);
                 imageProfile.setVisibility(View.VISIBLE);
 
-                String wholeID = DocumentsContract.getDocumentId(uri);
-                String id = wholeID.split(":")[1];
-                String[] column = {MediaStore.Images.Media.DATA};
-                String sel = MediaStore.Images.Media._ID + "=?";
-                Cursor cursor = EditProfileActivity.this.getContentResolver().
-                        query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                column, sel, new String[]{id}, null);
-                String filePath = "";
-                int columnIndex = cursor.getColumnIndex(column[0]);
-                if (cursor.moveToFirst()) {
-                    filePath = cursor.getString(columnIndex);
-                }
-                cursor.close();
+//                String wholeID = DocumentsContract.getDocumentId(uri);
+//                String id = wholeID.split(":")[1];
+//                String[] column = {MediaStore.Images.Media.DATA};
+//                String sel = MediaStore.Images.Media._ID + "=?";
+//                Cursor cursor = EditProfileActivity.this.getContentResolver().
+//                        query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                                column, sel, new String[]{id}, null);
+//                String filePath = "";
+//                int columnIndex = cursor.getColumnIndex(column[0]);
+//                if (cursor.moveToFirst()) {
+//                    filePath = cursor.getString(columnIndex);
+//                }
+//                cursor.close();
 
-                newImageProfile = new File(filePath);
+//                newImageProfile = new File(filePath);
+                newImageProfile = new File(uri.getPath());
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -199,7 +200,6 @@ public class EditProfileActivity extends AppCompatActivity {
             reqFile = null;
             imagePart = MultipartBody.Part.createFormData("none", "none");
         }
-
 
         RequestBody name = RequestBody.create(MediaType.parse("text/plain"), profileEditName.getEditText().getText().toString());
         RequestBody email = RequestBody.create(MediaType.parse("text/plain"), profileEditEmail.getEditText().getText().toString());

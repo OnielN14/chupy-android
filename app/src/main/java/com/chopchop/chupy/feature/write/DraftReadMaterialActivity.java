@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.chopchop.chupy.R;
 import com.chopchop.chupy.feature.read.adapter.ReadMaterialRecyclerViewAdapter;
+import com.chopchop.chupy.feature.write.adapter.UserKontenListAdapter;
 import com.chopchop.chupy.models.ReadMaterial;
 import com.chopchop.chupy.utilities.ChupyServiceController;
 import com.chopchop.chupy.utilities.SharedPrefManager;
@@ -32,6 +33,7 @@ public class DraftReadMaterialActivity extends AppCompatActivity {
     private SharedPrefManager chupySharedPrefManager;
 
     private List<ReadMaterial> kontenList = new ArrayList<>();
+    private List<ReadMaterial.ReadMaterialListByDate> kontenListByDate = new ArrayList<>();
 
     private LinearLayout loadingArea;
 
@@ -60,7 +62,8 @@ public class DraftReadMaterialActivity extends AppCompatActivity {
                 switch (response.code()){
                     case 200:
                         kontenList = serviceController.parseDataKontenFromService(response.body());
-                        recyclerView.setAdapter(new ReadMaterialRecyclerViewAdapter(kontenList,ReadMaterialRecyclerViewAdapter.EDITABLE));
+                        kontenListByDate = serviceController.parseKontenListByDate(kontenList);
+                        recyclerView.setAdapter(new UserKontenListAdapter(kontenListByDate));
                         break;
                 }
                 loadingArea.setVisibility(View.GONE);

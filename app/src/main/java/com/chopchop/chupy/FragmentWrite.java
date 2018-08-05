@@ -89,7 +89,7 @@ public class FragmentWrite extends Fragment {
                 switch (response.code()){
                     case 200:
                         kontenList = serviceController.parseDataKontenFromService(response.body());
-                        kontenListByDate = parseKontenListByDate(kontenList);
+                        kontenListByDate = serviceController.parseKontenListByDate(kontenList);
                         publishedKontenList.setAdapter( new UserKontenListAdapter(kontenListByDate));
                         break;
                 }
@@ -104,44 +104,6 @@ public class FragmentWrite extends Fragment {
                 loadingArea.setVisibility(View.GONE);
             }
         });
-    }
-
-    private List<ReadMaterial.ReadMaterialListByDate> parseKontenListByDate(List<ReadMaterial> kontenList) {
-        List<String> tempDateString;
-        List<ReadMaterial.ReadMaterialListByDate> tempKontenByDateList = new ArrayList<>();
-        tempDateString = extractDateListFromKonteList(kontenList);
-
-        ReadMaterial.ReadMaterialListByDate tempParsedList;
-        for (String item : tempDateString) {
-            List<ReadMaterial> tempParsedKontenList = new ArrayList<>();
-
-            for (ReadMaterial konten: kontenList) {
-                if (item.equals(getMonthYear(konten.getDate()))){
-                    tempParsedKontenList.add(konten);
-                }
-                Log.d(TAG, "parseKontenListByDate: "+item+" == "+getMonthYear(konten.getDate())+" is "+ item.equals(konten.getDate()));
-
-            }
-
-
-            tempParsedList = new ReadMaterial().new ReadMaterialListByDate(tempParsedKontenList,item);
-            tempKontenByDateList.add(tempParsedList);
-        }
-
-        return tempKontenByDateList;
-    }
-
-    private String getMonthYear(String date){
-        return date.split(" ")[1] + " " + date.split(" ")[2];
-    }
-
-    private List<String> extractDateListFromKonteList(List<ReadMaterial> kontenList) {
-        Set<String> tempDateString = new HashSet<>();
-        for (ReadMaterial konten : kontenList){
-            tempDateString.add(getMonthYear(konten.getDate()));
-        }
-
-        return new ArrayList<>(tempDateString);
     }
 
 
@@ -183,11 +145,8 @@ public class FragmentWrite extends Fragment {
                 startActivity(intent);
                 break;
             case R.id.write_post_draft:
-
                 intent = new Intent(getActivity(), DraftReadMaterialActivity.class);
-//                intent.putExtra("TagList", new Gson().toJson(tagList));
                 startActivity(intent);
-
                 break;
         }
 
