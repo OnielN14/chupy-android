@@ -31,9 +31,6 @@ public class DraftReadMaterialActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText searchBarEditText;
 
-    private Button deleteButton;
-    private Button editButton;
-
     private ChupyServiceController serviceController = new ChupyServiceController();
     private SharedPrefManager chupySharedPrefManager;
 
@@ -95,9 +92,6 @@ public class DraftReadMaterialActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view_user_post);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         searchBarEditText = findViewById(R.id.input_search);
-
-        deleteButton = findViewById(R.id.button_delete_post);
-        editButton = findViewById(R.id.button_edit_post);
     }
 
     @Override

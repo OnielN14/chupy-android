@@ -18,7 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.chopchop.chupy.FragmentRead;
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.models.ReadMaterial;
 import com.chopchop.chupy.models.ReadMaterialCategory;
 import com.chopchop.chupy.models.Tag;
 import com.chopchop.chupy.utilities.ChupyServiceController;
@@ -28,7 +30,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.hootsuite.nachos.NachoTextView;
 import com.hootsuite.nachos.chip.Chip;
+import com.hootsuite.nachos.chip.ChipInfo;
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +42,7 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,13 +70,15 @@ public class NewReadMaterialActivity extends AppCompatActivity {
 
     private List<ReadMaterialCategory> readMaterialCategoryList = new ArrayList<>();
     private List<Tag> tagList = new ArrayList<>();
-//    private String[] categoryTitleList = {"News", "Article", "Tips & Tricks"};
     private List<String> tagSuggestion = new ArrayList<>();
 
     private File imageFile;
+    private ReadMaterial readMaterial;
 
     private SharedPrefManager chupySharedPrefManager;
     private ChupyServiceController serviceController = new ChupyServiceController();
+
+    private boolean editMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +106,44 @@ public class NewReadMaterialActivity extends AppCompatActivity {
         tagNachoTextView.addChipTerminator(',', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
     }
 
+    private void fetchTag() {
+        if (FragmentRead.tagList.size() == 0){
+            FragmentRead.triggerReadMaterialFetching();
+        }
+        tagList = FragmentRead.tagList;
+    }
+
     private void bindData() {
+//        Bundle bundle = getIntent().getExtras();
+//        Type listOfTag = new TypeToken<List<Tag>>(){}.getType();
+//        tagList = new Gson().fromJson(bundle.getString("TagList"),listOfTag);
         Bundle bundle = getIntent().getExtras();
-        Type listOfTag = new TypeToken<List<Tag>>(){}.getType();
-        tagList = new Gson().fromJson(bundle.getString("TagList"),listOfTag);
+        if (bundle != null) {
+            editMode = true;
+            readMaterial = new Gson().fromJson(bundle.getString("kontenData"), ReadMaterial.class);
+            readMaterialTitle.setText(readMaterial.getTitle());
+            readMaterialDescription.setText(readMaterial.getDescription());
+            try{
+                Picasso.get().load(readMaterial.getPhoto().getHost()+'/'+readMaterial.getPhoto().getUrl()).into(previewImage);
+                previewImage.setVisibility(View.VISIBLE);
+            }
+            catch (NullPointerException e){
+                e.printStackTrace();
+            }
+
+            List<ChipInfo> chipInfoList = new ArrayList<>();
+            for (Tag tag : readMaterial.getTagList()){
+                chipInfoList.add( new ChipInfo(tag.getTagName(),null));
+            }
+
+            tagNachoTextView.setTextWithChips(chipInfoList);
+            getSupportActionBar().setTitle(getString(R.string.write_edit_page_title));
+
+        }
+
+        Toast.makeText(this, "Edit mode "+editMode, Toast.LENGTH_SHORT).show();
+
+        fetchTag();
     }
 
     private void initCategoryData() {
@@ -206,36 +247,105 @@ public class NewReadMaterialActivity extends AppCompatActivity {
             reqFile = null;
             imagePart = MultipartBody.Part.createFormData("none", "none");
         }
-        serviceController.getService().postKonten(chupySharedPrefManager.getSharedId(),readMaterialTitle.getText().toString(),readMaterialDescription.getText().toString(), postTypeDraft, parseChipsToStringArray(tagNachoTextView.getAllChips()),categoryList.getSelectedItemPosition()+1, imagePart).enqueue(new Callback<JsonObject>() {
+
+        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(chupySharedPrefManager.getSharedId()));
+        RequestBody judul = RequestBody.create(MediaType.parse("text/plain"), readMaterialTitle.getText().toString());
+        RequestBody deskripsi = RequestBody.create(MediaType.parse("text/plain"), readMaterialDescription.getText().toString());
+        RequestBody statuspost = RequestBody.create(MediaType.parse("text/plain"), postTypeDraft);
+        RequestBody idKategori = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(categoryList.getSelectedItemPosition()+1) );
+
+
+        if (editMode){
+//            RequestBody idKonten = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(readMaterial.getId()));
+            doEdit(readMaterial.getId(), judul, deskripsi, statuspost, idKategori, imagePart, postTypeDraft);
+        }
+        else{
+            doPost(userId, judul, deskripsi, statuspost, idKategori, imagePart, postTypeDraft);
+        }
+    }
+
+    private void doEdit(int idKonten, RequestBody judul, RequestBody deskripsi, RequestBody statuspost, RequestBody idKategori, MultipartBody.Part imagePart, final String postTypeDraft) {
+        Toast.makeText(this, getString(R.string.process_message_saving), Toast.LENGTH_SHORT).show();
+
+        serviceController.getService().editKonten(idKonten,judul, deskripsi, statuspost, parseChipsToStringArray(tagNachoTextView.getAllChips()),idKategori, imagePart).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.d(TAG, "onResponse: "+response.body());
-                String responseMessage = "";
-                if (postTypeDraft == POST_TYPE_DRAFT){
-                    responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_saved);
-                }
-                else if (postTypeDraft == POST_TYPE_PUBLISH){
-                    responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_published);
+
+                Log.d(TAG, "onResponse: "+response.errorBody());
+                switch (response.code()){
+                    case 200:
+                        String responseMessage = "";
+                        if (postTypeDraft == POST_TYPE_DRAFT){
+                            responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_saved);
+                        }
+                        else if (postTypeDraft == POST_TYPE_PUBLISH){
+                            responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_published);
+                        }
+
+                        Toast.makeText(NewReadMaterialActivity.this, responseMessage, Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Log.d(TAG, "onResponse: Failed "+response.raw());
                 }
 
-                Toast.makeText(NewReadMaterialActivity.this, responseMessage, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onResponse: Success :"+response.body());
+
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 t.printStackTrace();
+                Log.d(TAG, "onFailure: "+t.getMessage());
+                Toast.makeText(NewReadMaterialActivity.this, NewReadMaterialActivity.this.getString(R.string.process_message_error_undefined), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private void doPost(RequestBody userId, RequestBody judul, RequestBody deskripsi, RequestBody statuspost, RequestBody idKategori, MultipartBody.Part imagePart, final String postTypeDraft) {
+        Toast.makeText(this, getString(R.string.process_message_publishing), Toast.LENGTH_SHORT).show();
+        serviceController.getService().postKonten(userId,judul, deskripsi, statuspost, parseChipsToStringArray(tagNachoTextView.getAllChips()),idKategori, imagePart).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                Log.d(TAG, "onResponse: "+response.errorBody());
+                switch (response.code()){
+                    case 200:
+                        String responseMessage = "";
+                        if (postTypeDraft == POST_TYPE_DRAFT){
+                            responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_saved);
+                        }
+                        else if (postTypeDraft == POST_TYPE_PUBLISH){
+                            responseMessage = NewReadMaterialActivity.this.getString(R.string.process_message_published);
+                        }
+
+                        Toast.makeText(NewReadMaterialActivity.this, responseMessage, Toast.LENGTH_SHORT).show();
+                        finish();
+                        break;
+                    default:
+                        Log.d(TAG, "onResponse: Failed "+response.raw());
+                }
+
+                Log.d(TAG, "onResponse: Success :"+response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+                Log.d(TAG, "onFailure: "+t.getMessage());
                 Toast.makeText(NewReadMaterialActivity.this, NewReadMaterialActivity.this.getString(R.string.process_message_error_undefined), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private String[] parseChipsToStringArray(List<Chip> allChips) {
+    private List<String> parseChipsToStringArray(List<Chip> allChips) {
         List<String> tempString = new ArrayList<>();
         for (Chip item: allChips) {
             tempString.add(item.getText().toString());
         }
 
-        return tempString.toArray(new String[0]);
+        return tempString;
     }
 
     @Override

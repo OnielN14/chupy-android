@@ -1,18 +1,31 @@
 package com.chopchop.chupy.feature.read.adapter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chopchop.chupy.R;
+import com.chopchop.chupy.feature.write.NewReadMaterialActivity;
 import com.chopchop.chupy.models.ReadMaterial;
+import com.chopchop.chupy.utilities.ChupyServiceController;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMaterialRecyclerViewAdapter.ViewHolder>{
 
@@ -21,6 +34,8 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
 
     private List<ReadMaterial> readMaterialList;
     private int listType = READ_ONLY;
+
+    private ChupyServiceController serviceController = new ChupyServiceController();
 
     public ReadMaterialRecyclerViewAdapter(List<ReadMaterial> readMaterialList) {
         this.readMaterialList = readMaterialList;
@@ -67,6 +82,9 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
         private TextView itemDate;
         private TextView itemDescription;
         private TextView itemCategory;
+        private Button deleteButton;
+        private Button editButton;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -77,10 +95,12 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
             itemDescription = itemView.findViewById(R.id.text_view_item_description);
             if(listType != READ_ONLY){
                 itemCategory = itemView.findViewById(R.id.text_view_item_category);
+                deleteButton = itemView.findViewById(R.id.button_delete_post);
+                editButton = itemView.findViewById(R.id.button_edit_post);
             }
         }
 
-        public void bindData(ReadMaterial item){
+        public void bindData(final ReadMaterial item){
 
             // dummy image
             if (item.getPhoto() == null){
@@ -106,6 +126,50 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
 
             if (listType != READ_ONLY){
                 itemCategory.setText(itemView.getResources().getStringArray(R.array.read_tab_menu)[item.getCategoryId()-1]);
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+                        builder.setMessage(itemView.getResources().getString(R.string.alert_delete_confirmation)).setPositiveButton(R.string.alert_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(itemView.getContext(), itemView.getResources().getString(R.string.process_message_deleting), Toast.LENGTH_SHORT).show();
+                                serviceController.getService().deletePost(item.getId()).enqueue(new Callback<JsonObject>() {
+                                    @Override
+                                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                        switch (response.code()){
+                                            case 200:
+                                                Toast.makeText(itemView.getContext(), itemView.getResources().getString(R.string.process_message_deleted), Toast.LENGTH_SHORT).show();
+                                                break;
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                                        t.printStackTrace();
+                                        Toast.makeText(itemView.getContext(), itemView.getResources().getString(R.string.process_message_error_undefined), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }).setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                        builder.create().show();
+                    }
+                });
+
+                editButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), NewReadMaterialActivity.class);
+                        intent.putExtra("kontenData", new Gson().toJson(item));
+                        v.getContext().startActivity(intent);
+                    }
+                });
             }
         }
     }

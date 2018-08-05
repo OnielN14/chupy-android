@@ -82,10 +82,47 @@ import retrofit2.Response;
 public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
 
+    private static final String TAG = "FragmentPetService";
+
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
+
+//    private static final LatLng PetShop1 = new LatLng(-6.8898286,107.6168761);
+
+    //Widget
+    private AutoCompleteTextView mSearchText;
+    private ImageView imgSearchIcon;
+    private ImageView mGps;
+    private SlidingUpPanelLayout layout;
+
+    //vars
+    private Boolean mLocationPermissionsGranted = false;
+    private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
+    private GoogleApiClient mGoogleApiClient;
+    private PlaceInfo mPlace;
+    private Marker mMarker;
+    private HashMap<Marker, Integer> mHashMap = new HashMap<Marker, Integer>();
+
+    private ApiClientInterface apiClientInterface;
+
+    private View view;
+    private PetServiceJson coba;
+
+    RelativeLayout relativeLayout;
+    BottomSheetBehavior bottomSheetBehavior;
+
+    private ArrayList<String> mImgToko = new ArrayList<>();
+    private ArrayList<String> mNamaToko = new ArrayList<>();
+    private ArrayList<String> mDeskToko = new ArrayList<>();
+
     public FragmentPetService() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -115,46 +152,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         }
 
     }
-
-    private static final String TAG = "FragmentPetService";
-
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
-    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
-
-//    private static final LatLng PetShop1 = new LatLng(-6.8898286,107.6168761);
-
-    //Widget
-    private AutoCompleteTextView mSearchText;
-    private ImageView imgSearchIcon;
-    private ImageView mGps;
-    private SlidingUpPanelLayout layout;
-
-        //vars
-    private Boolean mLocationPermissionsGranted = false;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
-    private GoogleApiClient mGoogleApiClient;
-    private PlaceInfo mPlace;
-    private Marker mMarker;
-    private HashMap<Marker, Integer> mHashMap = new HashMap<Marker, Integer>();
-
-    private ApiClientInterface apiClientInterface;
-
-
-    private View view;
-    private PetServiceJson coba;
-
-
-    RelativeLayout relativeLayout;
-    BottomSheetBehavior bottomSheetBehavior;
-
-    private ArrayList<String> mImgToko = new ArrayList<>();
-    private ArrayList<String> mNamaToko = new ArrayList<>();
-    private ArrayList<String> mDeskToko = new ArrayList<>();
 
     @Nullable
     @Override
@@ -409,7 +406,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                 Intent intent = new Intent(getContext(), DetailTokoActivity.class);
                 intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
                 intent.putExtra("title", marker.getTitle());
-//                intent.putExtra("deskripsi", info.getDeskripsi());
 
                 startActivity(intent);
             }
@@ -422,23 +418,18 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
 
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if(ContextCompat.checkSelfPermission(getContext(),
                 FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(getContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(getContext(), COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 mLocationPermissionsGranted = true;
+//                init();
             }else{
-                ActivityCompat.requestPermissions(getActivity(),
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
             }
         }else{
-            ActivityCompat.requestPermissions(getActivity(),
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -461,12 +452,15 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
                     mLocationPermissionsGranted = true;
 
                     //initialize our mapss
+//                    init();
                     initMap();
                     getMarker();
                 }
             }
         }
     }
+
+
 
     private void hideSoftKeyboard(){
         final InputMethodManager imm = (InputMethodManager) getActivity()

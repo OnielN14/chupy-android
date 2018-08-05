@@ -4,16 +4,19 @@ import com.chopchop.chupy.models.Response;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -33,9 +36,17 @@ public interface ChupyService{
     @GET("api/kategoriKontens")
     Call<JsonObject> listReadMaterialCategory();
 
+    @POST("api/kontens/{kontenId}/delete")
+    Call<JsonObject> deletePost(@Path("kontenId") int kontenId);
+
+    @Multipart
+    @POST("api/kontens/{kontenId}/edit")
+    Call<JsonObject> editKonten(@Path("kontenId") int kontenId, @Part("judul") RequestBody judul, @Part("deskripsi") RequestBody deskripsi, @Part("statuspost") RequestBody statuspost, @Part("tag[]") List<String> tag, @Part("idKategori") RequestBody idKategori, @Part MultipartBody.Part file);
+
     @Multipart
     @POST("api/kontens")
-    Call<JsonObject> postKonten(@Part("userId") int userId, @Part("judul") String judul, @Part("deskripsi") String deskripsi, @Part("statuspost") String statuspost, @Part("tag") String[] tag, @Part("idKategori") int idKategori, @Part MultipartBody.Part file);
+    Call<JsonObject> postKonten(@Part("userId") RequestBody userId, @Part("judul") RequestBody judul, @Part("deskripsi") RequestBody deskripsi, @Part("statuspost") RequestBody statuspost, @Part("tag[]") List<String> tag, @Part("idKategori") RequestBody idKategori, @Part MultipartBody.Part file);
+
 
 
     @FormUrlEncoded

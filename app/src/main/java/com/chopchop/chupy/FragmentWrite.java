@@ -52,7 +52,6 @@ public class FragmentWrite extends Fragment {
     private Button deleteButton;
     private Button editButton;
 
-    private List<Tag> tagList = new ArrayList<>();
     private List<ReadMaterial> kontenList = new ArrayList<>();
     private List<ReadMaterial.ReadMaterialListByDate> kontenListByDate = new ArrayList<>();
 
@@ -74,7 +73,6 @@ public class FragmentWrite extends Fragment {
         chupySharedPrefManager = new SharedPrefManager(container.getContext());
 
         bindView(rootView);
-        fetchTag();
         bindData();
 
         return rootView;
@@ -126,13 +124,6 @@ public class FragmentWrite extends Fragment {
         editButton = rootView.findViewById(R.id.button_edit_post);
     }
 
-    private void fetchTag() {
-        if (FragmentRead.tagList.size() == 0){
-            FragmentRead.triggerReadMaterialFetching();
-        }
-        tagList = FragmentRead.tagList;
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.write_main_page_menu, menu);
@@ -146,7 +137,7 @@ public class FragmentWrite extends Fragment {
         switch (item.getItemId()){
             case R.id.write_post_new:
                 intent = new Intent(getActivity(), NewReadMaterialActivity.class);
-                intent.putExtra("TagList", new Gson().toJson(tagList));
+//                intent.putExtra("TagList", new Gson().toJson(tagList));
                 startActivity(intent);
                 break;
             case R.id.write_post_draft:

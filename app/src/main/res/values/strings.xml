@@ -32,6 +32,7 @@
     <string name="write_menu_post_new">New</string>
 
     <string name="write_new_page_title">New Post</string>
+    <string name="write_edit_page_title">Edit Post</string>
     <string name="write_draft_page_title">Your Draft</string>
 
     <string name="write_new_save">Save</string>
@@ -102,6 +103,9 @@
     <string name="process_message_publishing">Publishing</string>
     <string name="process_message_published">Published</string>
 
+    <string name="process_message_deleting">Deleting</string>
+    <string name="process_message_deleted">Deleted</string>
+
     <string name="process_message_sending">Sending</string>
     <string name="process_message_logging">Logging</string>
     <string name="process_message_error_undefined">Something Wrong</string>
@@ -114,4 +118,10 @@
     <string name="development_message">Sorry, we are still on development</string>
 
     <string name="back_pressed_message">Press back once more to exit</string>
+
+    <string name="alert_delete_confirmation">Are you sure ?</string>
+    <string name="alert_confirm">Yes</string>
+    <string name="alert_cancel">Cancel</string>
+
+
 </resources>
