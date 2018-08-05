@@ -157,6 +157,9 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
         // Required empty public constructor
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_petservice, container, false);
         mSearchText = (AutoCompleteTextView) view.findViewById(R.id.input_search);
         imgSearchIcon = (ImageView) view.findViewById(R.id.ic_magnify);
@@ -171,7 +174,6 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
             }
         });
         getMarker();
-//        getLocationPermission();
 
         getLocationPermission();
         return view;
@@ -399,35 +401,40 @@ public class FragmentPetService extends Fragment implements OnMapReadyCallback,
     private void initMap(){
         Log.d(TAG, "initMap: initializing map");
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Log.d(TAG, "onClick: clicked place info");
-                try {
-                    if (mMarker.isInfoWindowShown()){
-                        mMarker.hideInfoWindow();
-                    }else {
-                        Log.d(TAG, "onClick: place info: " + mPlace.toString());
-                        mMarker.showInfoWindow();
+        try{
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Log.d(TAG, "onClick: clicked place info");
+                    try {
+                        if (mMarker.isInfoWindowShown()){
+                            mMarker.hideInfoWindow();
+                        }else {
+                            Log.d(TAG, "onClick: place info: " + mPlace.toString());
+                            mMarker.showInfoWindow();
+                        }
+                    }catch (NullPointerException e){
+                        Log.d(TAG, "onClick: NullPointerException " + e.getMessage());
                     }
-                }catch (NullPointerException e){
-                    Log.d(TAG, "onClick: NullPointerException " + e.getMessage());
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Log.d("Marker ID", String.valueOf(mHashMap.get(marker)));
-                Intent intent = new Intent(getContext(), DetailTokoActivity.class);
-                intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
-                intent.putExtra("title", marker.getTitle());
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Log.d("Marker ID", String.valueOf(mHashMap.get(marker)));
+                    Intent intent = new Intent(getContext(), DetailTokoActivity.class);
+                    intent.putExtra("idMarker", String.valueOf(mHashMap.get(marker)));
+                    intent.putExtra("title", marker.getTitle());
 
-                startActivity(intent);
-            }
-        });
+                    startActivity(intent);
+                }
+            });
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
