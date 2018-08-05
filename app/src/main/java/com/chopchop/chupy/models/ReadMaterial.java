@@ -11,8 +11,9 @@ public class ReadMaterial {
     private int categoryId;
     private List<Tag> tagList;
     private Photo photo;
+    private String statusPost;
 
-    public ReadMaterial(int id, String title, String description, String categoryName, int categoryId, String date, Photo photo, List<Tag> tagList) {
+    public ReadMaterial(int id, String title, String description, String categoryName, int categoryId, String date, Photo photo, List<Tag> tagList, String statusPost) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -21,6 +22,7 @@ public class ReadMaterial {
         this.date = date;
         this.photo = photo;
         this.tagList = tagList;
+        this.statusPost = statusPost;
     }
 
     public int getId() {
@@ -85,6 +87,32 @@ public class ReadMaterial {
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
+    }
+
+    public class ReadMaterialListByDate{
+        private List<ReadMaterial> readMaterialList;
+        private String date;
+
+        public ReadMaterialListByDate(List<ReadMaterial> readMaterialList, String date) {
+            this.readMaterialList = readMaterialList;
+            this.date = date;
+        }
+
+        public List<ReadMaterial> getReadMaterialList() {
+            return readMaterialList;
+        }
+
+        public void setReadMaterialList(List<ReadMaterial> readMaterialList) {
+            this.readMaterialList = readMaterialList;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
     }
 
 }

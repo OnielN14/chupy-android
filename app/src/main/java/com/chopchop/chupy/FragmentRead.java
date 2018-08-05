@@ -343,7 +343,7 @@ public class FragmentRead extends Fragment {
 
             tempGlobalTagList.addAll(contentTagList);
 
-            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), item.getAsJsonObject().get("tanggalPost").getAsString(), tempPhoto, contentTagList));
+            tempReadMaterials.add(new ReadMaterial(item.getAsJsonObject().get("id").getAsInt(), item.getAsJsonObject().get("judul").getAsString(), item.getAsJsonObject().get("deskripsi").getAsString(), item.getAsJsonObject().get("kategori").getAsString(), item.getAsJsonObject().get("idKategori").getAsInt(), item.getAsJsonObject().get("tanggalPost").getAsString(), tempPhoto, contentTagList, item.getAsJsonObject().get("statuspost").getAsString()));
 
         }
 

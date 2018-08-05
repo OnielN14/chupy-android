@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.chopchop.chupy.feature.petservice.FragmentPetService;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Request";
     private BottomNavigationViewEx navbar;
+
+    private int backPressedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment selectedFragments = null;
 
+            resetBackPressedCount();
+
             switch (item.getItemId()) {
                 case R.id.nav_petservice:
                     selectedFragments = new FragmentPetService();
@@ -89,4 +94,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     };
+
+    private void resetBackPressedCount() {
+        backPressedCount = 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+        backPressedCount++;
+        if (backPressedCount<2){
+            Toast.makeText(this, getString(R.string.back_pressed_message), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            super.onBackPressed();
+        }
+
+    }
 }

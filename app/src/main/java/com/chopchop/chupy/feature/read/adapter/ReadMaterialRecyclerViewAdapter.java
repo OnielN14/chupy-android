@@ -15,10 +15,20 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMaterialRecyclerViewAdapter.ViewHolder>{
+
+    public static final int EDITABLE = 0;
+    public static final int READ_ONLY = 1;
+
     private List<ReadMaterial> readMaterialList;
+    private int listType = READ_ONLY;
 
     public ReadMaterialRecyclerViewAdapter(List<ReadMaterial> readMaterialList) {
         this.readMaterialList = readMaterialList;
+    }
+
+    public ReadMaterialRecyclerViewAdapter(List<ReadMaterial> readMaterialList, int listType) {
+        this(readMaterialList);
+        this.listType = listType;
     }
 
     public void updateData(List<ReadMaterial> readMaterialList){
@@ -30,7 +40,12 @@ public class ReadMaterialRecyclerViewAdapter extends RecyclerView.Adapter<ReadMa
     @Override
     public ReadMaterialRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.template_item_read_material, parent, false);
+        int layoutResource = R.layout.template_item_read_material;
+        if (listType == EDITABLE){
+            layoutResource = R.layout.template_item_read_material_user_post;
+        }
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutResource, parent, false);
 
         return new ViewHolder(view);
     }

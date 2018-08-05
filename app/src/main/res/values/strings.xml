@@ -108,4 +108,5 @@
     <string name="forgot_password_request_button">Send Request</string>
     <string name="development_message">Sorry, we are still on development</string>
 
+    <string name="back_pressed_message">Press back once more to exit</string>
 </resources>

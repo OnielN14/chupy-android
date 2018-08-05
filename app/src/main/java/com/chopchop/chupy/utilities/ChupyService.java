@@ -24,11 +24,16 @@ public interface ChupyService{
     @GET("api/kontens")
     Call<JsonObject> listReadMaterial();
 
-    @POST("api/kontens")
-    Call<JsonObject> postKontens();
+    @GET("api/kontens/{userId}/draft")
+    Call<JsonObject> getDraftKontenFromUser(@Path("userId") String userId);
+
+    @GET("api/kontens/{userId}/published")
+    Call<JsonObject> getPublishedKontenFromUser(@Path("userId") String userId);
 
     @GET("api/kategoriKontens")
     Call<JsonObject> listReadMaterialCategory();
+
+
 
     @FormUrlEncoded
     @POST("api/login")
