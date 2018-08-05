@@ -1,17 +1,24 @@
 package com.chopchop.chupy.feature.petservice;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailTokoActivity extends AppCompatActivity{
+public class DetailTokoActivity extends AppCompatActivity {
 
 
     private static final String TAG = "MapsLoc";
@@ -49,6 +56,7 @@ public class DetailTokoActivity extends AppCompatActivity{
     private TextView nama;
     private TextView deskripsi, alamat, notelp, status;
     private ImageView mapImage, imageToko;
+    private Button btnTlp;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Boolean mLocationPermissionsGranted = false;
@@ -60,22 +68,23 @@ public class DetailTokoActivity extends AppCompatActivity{
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_toko_activity);
-        nama = (TextView)findViewById(R.id.detNama);
-        deskripsi = (TextView)findViewById(R.id.detDeskripsi);
+        nama = (TextView) findViewById(R.id.detNama);
+        deskripsi = (TextView) findViewById(R.id.detDeskripsi);
         alamat = (TextView) findViewById(R.id.detAlamat);
         notelp = (TextView) findViewById(R.id.detTelp);
         mapImage = (ImageView) findViewById(R.id.mapLocation);
         status = (TextView) findViewById(R.id.detStatus);
         imageToko = findViewById(R.id.deskImage);
+        btnTlp = findViewById(R.id.btnKontak);
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (getSupportActionBar()!=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 //
@@ -90,44 +99,45 @@ public class DetailTokoActivity extends AppCompatActivity{
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             this.finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void getDetail(){
+    private void getDetail() {
         apiClientInterface = ApiClient.getApiClient().create(ApiClientInterface.class);
         retrofit2.Call<Example> call = apiClientInterface.get();
         call.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
-                List<PetServiceJson> list= response.body().getData();
-                Log.d("Detail", list.get(id-1).getNama());
-                nama.setText(list.get(id-1).getNama());
-                deskripsi.setText(list.get(id-1).getDeskripsi());
-                alamat.setText("Alamat   : " +list.get(id-1).getAlamat());
-                status.setText("Status    : " +list.get(id-1).getStatusToko() );
-                notelp.setText("No. Telp : "+list.get(id-1).getNotelepon());
+                List<PetServiceJson> list = response.body().getData();
+                Log.d("Detail", list.get(id - 1).getNama());
+                nama.setText(list.get(id - 1).getNama());
+                deskripsi.setText(list.get(id - 1).getDeskripsi());
+                alamat.setText("Alamat   : " + list.get(id - 1).getAlamat());
+                status.setText("Status    : " + list.get(id - 1).getStatusToko());
+                notelp.setText("No. Telp : " + list.get(id - 1).getNotelepon());
 //
 //                petShopM(list.get(id-1).getNama(),Double.valueOf(list.get(id-1).getLatitude()),Double.valueOf(list.get(id-1).getLongitude()), list.get(id-1).getDeskripsi(),list.get(id-1).getAlamat());
 
                 Picasso.get()
-                        .load("https://chuppy-rpl.azurewebsites.net"+list.get(id-1).getFoto())
+                        .load("https://chuppy-rpl.azurewebsites.net" + list.get(id - 1).getFoto())
                         .into(imageToko);
 
                 Drawable circleDrawable = getResources().getDrawable(R.drawable.icon_map_pin_pet_service);
                 BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
                 Picasso.get()
                         .load("http://maps.google.com/maps/api/staticmap?center="
-                                + Double.valueOf(list.get(id-1).getLatitude()) + "," + Double.valueOf(list.get(id-1).getLongitude()) + "&zoom=15&markers=icon:https://image.ibb.co/kMpsm8/icon_map_pin_pet_servicesssssssssssssssssssssssss.png|"
-                                + Double.valueOf(list.get(id-1).getLatitude()) + "," + Double.valueOf(list.get(id-1).getLongitude()) + "|"
-                                + Double.valueOf(list.get(id-1).getLatitude()) + "," + Double.valueOf(list.get(id-1).getLongitude()) + "&path=color:0x0000FF80|weight:5|"
-                                + Double.valueOf(list.get(id-1).getLatitude()) + "," + Double.valueOf(list.get(id-1).getLongitude()) + "&size=700x500&sensor=false")
+                                + Double.valueOf(list.get(id - 1).getLatitude()) + "," + Double.valueOf(list.get(id - 1).getLongitude()) + "&zoom=15&markers=icon:https://image.ibb.co/kMpsm8/icon_map_pin_pet_servicesssssssssssssssssssssssss.png|"
+                                + Double.valueOf(list.get(id - 1).getLatitude()) + "," + Double.valueOf(list.get(id - 1).getLongitude()) + "|"
+                                + Double.valueOf(list.get(id - 1).getLatitude()) + "," + Double.valueOf(list.get(id - 1).getLongitude()) + "&path=color:0x0000FF80|weight:5|"
+                                + Double.valueOf(list.get(id - 1).getLatitude()) + "," + Double.valueOf(list.get(id - 1).getLongitude()) + "&size=700x500&sensor=false")
                         .into(mapImage);
+                notelp(list.get(id-1).getNotelepon());
 //                http://maps.google.com/maps/api/staticmap?center=25.3176452,82.97391440000001,&zoom=15&markers=25.3176452,82.97391440000001|25.3176452,82.97391440000001&path=color:0x0000FF80|weight:5|25.3176452,82.97391440000001&size=175x175&sensor=TRUE_OR_FALSE
             }
 
@@ -138,6 +148,15 @@ public class DetailTokoActivity extends AppCompatActivity{
         });
     }
 
+    private void notelp(final String phoneNumber) {
+        btnTlp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
+            }
+        });
+
+    }
     private void setCollaptingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);

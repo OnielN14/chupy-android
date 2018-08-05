@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.chopchop.chupy.feature.profile.ChangePasswordActivity;
 import com.chopchop.chupy.feature.profile.EditProfileActivity;
+import com.chopchop.chupy.feature.profile.RegisterPetShop;
 import com.chopchop.chupy.utilities.ChupyService;
 import com.chopchop.chupy.utilities.ChupyServiceController;
 import com.chopchop.chupy.utilities.SharedPrefManager;
@@ -33,6 +34,7 @@ public class FragmentProfile extends Fragment {
     private TextView about;
     private TextView profileLogout;
     private TextView profileFullName;
+    private TextView registrasiPetShop;
 
     private SharedPrefManager chupySharedPrefManager;
     private ChupyServiceController serviceController = new ChupyServiceController();
@@ -129,6 +131,15 @@ public class FragmentProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        registrasiPetShop = rootView.findViewById(R.id.text_view_register_petshop);
+        registrasiPetShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), RegisterPetShop.class);
                 startActivity(intent);
             }
         });

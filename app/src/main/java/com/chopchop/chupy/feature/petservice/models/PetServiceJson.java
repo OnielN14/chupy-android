@@ -1,7 +1,6 @@
 package com.chopchop.chupy.feature.petservice.models;
 
 
-import com.chopchop.chupy.Coba;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
